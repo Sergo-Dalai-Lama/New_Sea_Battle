@@ -63,6 +63,7 @@ System.out.println("Начало игрового цикла");
                    System.out.println("Beyond field");
                }
            }
+
         }
 
         render.renderingMyBorder();

@@ -31,11 +31,11 @@ public class ListShip {
         return false;
     }
 
-    public boolean getShipAvailable(Ship ship) {
+    public boolean isShipOccupied(Ship ship) {
         return (allListShips.get(ship) != null);
     }
 
-    public boolean getShipAvailable(Coordinate coordinate) {
+    public boolean isShipOccupied(Coordinate coordinate) {
         return (allListShips.get(getShipLiveAtCoordinate(coordinate)) != null);
     }
 

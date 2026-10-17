@@ -15,7 +15,7 @@ public class GameCore {
 
     public UnSetShipResult unSetShip(UnSetShipCommand unSetShipCommand) {
         Ship ship = null;
-        if (listShip.getShipAvailable(unSetShipCommand.coordinate())){//если координат корабля нет в списке
+        if (listShip.isShipOccupied(unSetShipCommand.coordinate())){//если координат корабля нет в списке
             //возможных к установке, значит можно убрать его из списка установленных
 
             ship = listShip.unSetShipInList(unSetShipCommand.coordinate());
@@ -47,7 +47,14 @@ public class GameCore {
         Coordinate coordinate = setShipCommand.coordinate();
         Orientation orientation = setShipCommand.orientation();
 
-        if (listShip.getShipAvailable(ship)){//проверяем, есть ли такой тип кораблей еще
+        if (ship==null) {
+            return new SetShipResult(
+                    coordinate,
+                    SetShipOutcome.INVALID_DATA,
+                    null
+            );
+        }
+        if (listShip.isShipOccupied(ship)){//проверяем, есть ли такой тип кораблей еще
 
             return new SetShipResult(
                      coordinate,
@@ -289,11 +296,19 @@ public class GameCore {
     }
 
     private boolean beyondFieldVertical(Coordinate coordinate, Ship ship) {
-        return coordinate.y()<0||coordinate.y()+ship.getSize()>GameConfig.COLUMNS||coordinate.x()<0||coordinate.x()>GameConfig.ROWS;
+        return coordinate.y()<0||
+                coordinate.y()+ship.getSize()>GameConfig.COLUMNS||
+                coordinate.x()<0||
+                coordinate.x()>=GameConfig.ROWS||
+                coordinate.y()>=GameConfig.COLUMNS;
     }
 
     private boolean beyondFieldHorizontal(Coordinate coordinate, Ship ship) {
-        return coordinate.x()<0||coordinate.x()+ship.getSize()>GameConfig.ROWS||coordinate.y()<0||coordinate.y()>GameConfig.COLUMNS;
+        return coordinate.x()<0||
+                coordinate.x()+ship.getSize()>GameConfig.ROWS||
+                coordinate.y()<0||
+                coordinate.y()>=GameConfig.COLUMNS||
+                coordinate.x()>=GameConfig.ROWS;
     }
 
     private boolean shipCollisionVertical(Coordinate coordinate, Ship ship) {
