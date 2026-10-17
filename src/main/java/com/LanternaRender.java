@@ -154,7 +154,7 @@ public void renderSetShips(ListShip listShip){//перенести потом в
         screen.newTextGraphics().putString(1,13, "Enter 'set' if you want set. Enter x,y,type,no.,orientation");
     screen.newTextGraphics().putString(1,14,"Enter 'unset' if you want unset. Enter x,y");
     screen.newTextGraphics().putString(1,15,"Enter 'move' if you want move. Enter x,y");
-    screen.newTextGraphics().putString(1,16,"Enter 'rotate' if you want rotate.");
+    screen.newTextGraphics().putString(1,16,"Enter 'repos' if you want reposition. Enter coord. ship,x,y,new orient., ");
     }
 
 @Override

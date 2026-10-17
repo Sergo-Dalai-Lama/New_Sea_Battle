@@ -29,7 +29,19 @@ public class GameCore {
                 UnSetShipOutcome.NON_UNSET
         );
     }
-
+    public RepositionShipResult repositionShip(RepositionShipCommand repositionShipCommand) {
+        Ship ship = null;
+        Orientation orientation = null;
+        Coordinate coordinateUnSet = repositionShipCommand.coordinate1();
+        Coordinate coordinateSet = repositionShipCommand.coordinate2();
+        Orientation orientationSet = repositionShipCommand.orientation();
+        UnSetShipCommand unSetShipCommand = new UnSetShipCommand(coordinateUnSet);
+        UnSetShipResult unSetShipResult = unSetShip(unSetShipCommand);//удалили корабль
+        ship = unSetShipResult.ship();
+        SetShipCommand setShipCommand = new SetShipCommand(coordinateSet,ship,orientationSet);
+        SetShipResult setShipResult = setShip(setShipCommand);//поставили корабль
+        return new RepositionShipResult(unSetShipResult,setShipResult);
+    }
     public SetShipResult setShip(SetShipCommand setShipCommand) {
         Ship ship = setShipCommand.ship();
         Coordinate coordinate = setShipCommand.coordinate();
@@ -310,7 +322,6 @@ public class GameCore {
     if (coordinate.x()<0||coordinate.x()>=GameConfig.ROWS||coordinate.y()<0||coordinate.y()>=GameConfig.COLUMNS) return false;
     return true;
 }
-
     private void removeCoordinatesBlock(List<Coordinate> includeCoordinates, Coordinate coordinate, Ship ship){
 
     List<Coordinate> coordinatesBlockSet = new ArrayList<>();//создали пустой список координат, которые надо удалить

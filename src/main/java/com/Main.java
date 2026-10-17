@@ -3,7 +3,7 @@ package com;
 import java.io.IOException;
 
 public class Main{
-public static void main() throws IOException {
+static void main() throws IOException {
 
     ListShip shipDynamic1 =  new ListShip();//список для 1 игрока
     GameCore gameCore1 = new GameCore(shipDynamic1);//ядро для 1 игрока
@@ -49,6 +49,21 @@ System.out.println("Начало игрового цикла");
         remainingShipModel1.applyUnSetShipResult(unSetResult);
         render.renderingMyRemainingShip(remainingShipModel1);
     }
+        if (shipSetting==ShipSetting.REPOSITION){//если команда убрать корабль
+            System.out.println("Выбрана команда reposition");
+           RepositionShipCommand repositionShipCommand = inputLanterna.inputRepositionShip();
+           RepositionShipResult repositionShipResult = gameCore1.repositionShip(repositionShipCommand);
+           if (repositionShipResult.unSetShipResult().unSetShipOutcome()==UnSetShipOutcome.NON_UNSET){
+               System.out.println("Корабль не найден");
+           } else {
+               if (repositionShipResult.setShipResult().outcome() == SetShipOutcome.SHIP_COLLISION) {
+                   System.out.println("Ship collision");
+               }
+               if (repositionShipResult.setShipResult().outcome() == SetShipOutcome.BEYOND_FIELD) {
+                   System.out.println("Beyond field");
+               }
+           }
+        }
 
         render.renderingMyBorder();
         render.renderSetShips(shipDynamic1);

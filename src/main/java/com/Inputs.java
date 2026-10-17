@@ -7,4 +7,5 @@ public interface Inputs {
     SetShipCommand inputSetShips()  throws IOException ;
     UnSetShipCommand inputUnSetShip() throws IOException;
     AttackCommand inputAttack() throws IOException;
+    RepositionShipCommand inputRepositionShip() throws IOException;
 }

@@ -43,19 +43,14 @@ public class LanternaInput implements Inputs{
                 return ShipSetting.SET;
             }
         }
-        if (inputstring.length() == 4) {
-            if (inputstring.equals("move")) {
-                return ShipSetting.MOVE;
+        if (inputstring.length() == 5) {
+            if (inputstring.equals("repos")) {
+                return ShipSetting.REPOSITION;
             }
         }
         if (inputstring.length() == 5) {
             if (inputstring.equals("unset")) {
                 return ShipSetting.UNSET;
-            }
-        }
-        if (inputstring.length() == 6) {
-            if (inputstring.equals("rotate")) {
-                return ShipSetting.ROTATE;
             }
         }
 
@@ -98,7 +93,7 @@ public class LanternaInput implements Inputs{
         if (inputString.charAt(4)=='v'){orientation=Orientation.VERTICAL;}
         for (int i =1; i<=4; i++){
             if (inputString.charAt(2)==shipName[i-1]){
-                int numberShip = i+(int)inputString.charAt(3)-'0'-2;;
+                int numberShip = i+(int)inputString.charAt(3)-'0'-2;
                 if (inputString.charAt(2)==shipName[2]){
                     numberShip = i+(int)inputString.charAt(3)-'0'-1;
                 }
@@ -123,7 +118,7 @@ public class LanternaInput implements Inputs{
 
     @Override
     public UnSetShipCommand inputUnSetShip() throws IOException {
-        Ship ship = null;
+
         StringBuilder input = new StringBuilder();
         while (true) {
             KeyStroke key = screen.readInput();
@@ -157,9 +152,62 @@ public class LanternaInput implements Inputs{
             }
         }
         Coordinate coordinate = new Coordinate(x,y);
-      System.out.println("x:"+x+", y:"+y);
         return new UnSetShipCommand(coordinate);
 
+    }
+    @Override
+    public RepositionShipCommand inputRepositionShip() throws IOException {
+        StringBuilder input = new StringBuilder();
+        while (true) {
+            KeyStroke key = screen.readInput();
+
+            if (key.getKeyType() == KeyType.Enter) {
+                break;
+            }
+
+            if (key.getKeyType() == KeyType.Character) {
+                input.append(key.getCharacter());
+            }
+
+            if (key.getKeyType() == KeyType.Backspace && !input.isEmpty()) {
+                input.deleteCharAt(input.length() - 1);
+            }
+        }
+
+        String inputString = input.toString();
+        Orientation orientation = null;
+        int X1 = -1;
+        int Y1 = -1;
+        int X2 = -1;
+        int Y2 = -1;
+        for (int i =0; i<GameConfig.ROWS; i++) {
+            if (inputString.charAt(0)==rowNameX[i]) {
+                X1 = i;
+            }
+
+        }
+        for (int i =0; i<GameConfig.COLUMNS; i++) {
+            if (inputString.charAt(1)==rowNameY[i]) {
+                Y1 = i;
+            }
+        }
+        for (int i =0; i<GameConfig.ROWS; i++) {
+            if (inputString.charAt(2)==rowNameX[i]) {
+                X2 = i;
+            }
+
+        }
+        for (int i =0; i<GameConfig.COLUMNS; i++) {
+            if (inputString.charAt(3)==rowNameY[i]) {
+                Y2 = i;
+            }
+        }
+        if (inputString.charAt(4)=='h'){orientation=Orientation.HORIZONTAL;}
+        if (inputString.charAt(4)=='v'){orientation=Orientation.VERTICAL;}
+
+        Coordinate coordinate1 = new Coordinate(X1,Y1);
+        Coordinate coordinate2 = new Coordinate(X2,Y2);
+        return new RepositionShipCommand(coordinate1,coordinate2,orientation);
     }
     @Override
     public AttackCommand inputAttack() throws IOException {
