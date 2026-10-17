@@ -1,8 +1,5 @@
 package com;
 
-import com.googlecode.lanterna.input.KeyType;
-import com.googlecode.lanterna.screen.Screen;
-
 import java.io.IOException;
 
 public class Main{
@@ -48,7 +45,7 @@ System.out.println("Начало игрового цикла");
     if (shipSetting==ShipSetting.UNSET){//если команда убрать корабль
         System.out.println("Выбрана команда unset");
         UnSetShipCommand unSet = inputLanterna.inputUnSetShip();
-        UnSetShipResult unSetResult = gameCore1.unSetResult(unSet);
+        UnSetShipResult unSetResult = gameCore1.unSetShip(unSet);
         remainingShipModel1.applyUnSetShipResult(unSetResult);
         render.renderingMyRemainingShip(remainingShipModel1);
     }

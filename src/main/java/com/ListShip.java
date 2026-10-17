@@ -32,16 +32,21 @@ public class ListShip {
     }
 
     public boolean getShipAvailable(Ship ship) {
-
         return (allListShips.get(ship) != null);
     }
 
-    public void unSetShipInList(Ship ship) {
+    public boolean getShipAvailable(Coordinate coordinate) {
+        return (allListShips.get(getShipLiveAtCoordinate(coordinate)) != null);
+    }
+
+    public Ship unSetShipInList(Coordinate coordinate) {
+        Ship ship = getShipLiveAtCoordinate(coordinate);
         allListShips.remove(ship);
+        return ship;
     }
 
     public boolean aliveIsShip(Coordinate coordinate) {//метод сделать приватным
-        if (getShipAtCoordinate(coordinate)==null) {//здесь обращение к all, корабля быть не должно
+        if (getShipLiveAtCoordinate(coordinate)==null) {//здесь обращение к all, корабля быть не должно
             return !allListShips.get(getShipDeathAtCoordinate(coordinate)).isEmpty();//здесь обращение к death по координате
         }
         return true;
@@ -82,7 +87,7 @@ public class ListShip {
         return null;
     }
 
-    private Ship getShipAtCoordinate(Coordinate coordinate) {
+    private Ship getShipLiveAtCoordinate(Coordinate coordinate) {
 
         for (Ship ship : allListShips.keySet()) {
             if (allListShips.get(ship).contains(coordinate)) {

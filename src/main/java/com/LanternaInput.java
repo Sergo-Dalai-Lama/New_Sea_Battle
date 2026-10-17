@@ -142,27 +142,23 @@ public class LanternaInput implements Inputs{
         }
 
         String inputString = input.toString();
+        int x = -1;
+        int y = -1;
 
-        for (int i =1; i<=4; i++){
+        for (int i =0; i<GameConfig.ROWS; i++) {
+            if (inputString.charAt(0)==rowNameX[i]) {
+                x = i;
+            }
 
-            if (inputString.charAt(0)==shipName[i-1]){
-                int numberShip = i+(int)inputString.charAt(1)-'0'-2;;
-                if (inputString.charAt(0)==shipName[2]){
-                    numberShip = i+(int)inputString.charAt(1)-'0'-1;
-                }
-                if (inputString.charAt(0)==shipName[3]){
-                    numberShip = i+(int)inputString.charAt(1)-'0'+1;
-                }
-
-                System.out.println(numberShip);
-
-                if (numberShip<Ship.values().length){
-                    ship = Ship.values()[numberShip];
-                }
+        }
+        for (int i =0; i<GameConfig.COLUMNS; i++) {
+            if (inputString.charAt(1)==rowNameY[i]) {
+                y = i;
             }
         }
-
-        return new UnSetShipCommand(ship);
+        Coordinate coordinate = new Coordinate(x,y);
+      System.out.println("x:"+x+", y:"+y);
+        return new UnSetShipCommand(coordinate);
 
     }
     @Override

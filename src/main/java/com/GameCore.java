@@ -13,17 +13,19 @@ public class GameCore {
 
     }
 
-    public UnSetShipResult unSetResult(UnSetShipCommand unSetShipCommand) {
-        if (listShip.getShipAvailable(unSetShipCommand.ship())){//если корабля нет в списке
+    public UnSetShipResult unSetShip(UnSetShipCommand unSetShipCommand) {
+        Ship ship = null;
+        if (listShip.getShipAvailable(unSetShipCommand.coordinate())){//если координат корабля нет в списке
             //возможных к установке, значит можно убрать его из списка установленных
-            listShip.unSetShipInList(unSetShipCommand.ship());
+
+            ship = listShip.unSetShipInList(unSetShipCommand.coordinate());
             return new UnSetShipResult(
-                    unSetShipCommand.ship(),
+                    ship,
                     UnSetShipOutcome.UNSET
             );
         }
         return new UnSetShipResult(
-                unSetShipCommand.ship(),
+                ship,
                 UnSetShipOutcome.NON_UNSET
         );
     }

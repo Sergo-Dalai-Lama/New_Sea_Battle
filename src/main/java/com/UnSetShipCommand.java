@@ -1,4 +1,4 @@
 package com;
 
-public record UnSetShipCommand(Ship ship) {
+public record UnSetShipCommand(Coordinate coordinate) {
 }
