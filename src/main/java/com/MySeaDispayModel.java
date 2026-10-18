@@ -3,10 +3,10 @@ package com;
 import java.util.Set;
 
 public class MySeaDispayModel {
-    private final ListShip shipList;
+    private final ListShip listShip;
     private TypeCellMySea[][] mySea;
-    public MySeaDispayModel(ListShip shipList) {
-        this.shipList = shipList;
+    public MySeaDispayModel(ListShip listShip) {
+        this.listShip = listShip;
         fieldGenerate();
     }
 
@@ -14,13 +14,12 @@ public class MySeaDispayModel {
         mySea = new TypeCellMySea[GameConfig.ROWS][GameConfig.COLUMNS];
         for (int i = 0; i < GameConfig.ROWS; i++) {
             for (int j = 0; j < GameConfig.COLUMNS; j++) {
+                mySea[i][j] = TypeCellMySea.SEA;
                 Coordinate currentCoordinate = new Coordinate(i, j);
-                for (Coordinate coordinates : shipList.getValue()){
+                for (Coordinate coordinates : listShip.getValue()){
                     if (coordinates.equals(currentCoordinate)) {
                         mySea[i][j] = TypeCellMySea.DECK;
                         break;
-                    } else {
-                        mySea[i][j] = TypeCellMySea.SEA;
                     }
                 }
             }
@@ -29,7 +28,7 @@ public class MySeaDispayModel {
 
     public TypeCellMySea getType(int x, int y) {
         return mySea[x][y];
-    }//вспомогательный метод для отображения
+    }
 
     public void applyAttackResultMySea(AttackResult result) {
 
@@ -59,21 +58,6 @@ public class MySeaDispayModel {
             }
         } else {
             mySea[result.coordinate().x()][result.coordinate().y()]=TypeCellMySea.MISS;
-        }
-    }
-
-    public void applySetShipResult(SetShipResult result) {//метод должен быть во view, перенести, когда начну реализовывать консольный ввод-вывод
-        if (result.outcome()==SetShipOutcome.SET){
-            System.out.println("Set Ship Finished");
-        }
-        if (result.outcome()==SetShipOutcome.SHIP_COLLISION){
-            System.out.println("Ship Collision!");
-        }
-        if (result.outcome()==SetShipOutcome.INVALID_DATA){
-            System.out.println("Invalid Data!");
-        }
-        if (result.outcome()==SetShipOutcome.BEYOND_FIELD){
-            System.out.println("Beyond Field!");
         }
     }
 

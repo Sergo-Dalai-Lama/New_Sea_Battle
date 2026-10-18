@@ -38,6 +38,7 @@ public class LanternaInput implements Inputs{
             }
         }
         String inputstring = input.toString();
+
         if (inputstring.length() == 3) {
             if (inputstring.equals("set")) {
                 return ShipSetting.SET;
@@ -74,11 +75,15 @@ public class LanternaInput implements Inputs{
                 input.deleteCharAt(input.length() - 1);
             }
         }
+
         int x = -1;
         int y = -1;
         Ship ship = null;
         Orientation orientation = null;
         String inputString = input.toString();
+        if (!(input.length() == 5)) {
+            return new SetShipCommand(new Coordinate(x,y), ship, orientation);
+        }
         for (int i =0; i<GameConfig.ROWS; i++){
             if (inputString.charAt(0)==rowNameX[i]){
                 x = i;
@@ -89,6 +94,7 @@ public class LanternaInput implements Inputs{
                 y = i;
             }
         }
+
         if (inputString.charAt(4)=='h'){orientation=Orientation.HORIZONTAL;}
         if (inputString.charAt(4)=='v'){orientation=Orientation.VERTICAL;}
         for (int i =1; i<=4; i++){

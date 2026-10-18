@@ -10,9 +10,8 @@ static void main() throws IOException {
     RemainingShipModel remainingShipModel1 = new RemainingShipModel();
     ListShip shipDynamic2 =  new ListShip();//список для 2 игрока
     GameCore gameCore2 = new GameCore(shipDynamic2);//ядро для 2 игрока
-   // gameCore1.generationShipFormation();//сгенерировали поле для 1 игрока
-    LanternaRender render = new LanternaRender();
-    LanternaInput inputLanterna = new LanternaInput(render.screen);//создали класс вводимых данных
+    LanternaRender render = new LanternaRender();//создал отрисовку экрана
+    LanternaInput inputLanterna = new LanternaInput(render.screen);//создали класс вводимых данных, связанных с экраном отрисовки
 System.out.println("Начало игрового цикла");
     boolean flagSetShip1 = true ;
     while (flagSetShip1) {//состояние "установка кораблей"

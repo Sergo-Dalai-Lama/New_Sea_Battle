@@ -17,6 +17,10 @@ public class ListShip {
         return coordinates;
     }
 
+    public void clear(){
+        allListShips.clear();
+    }
+
     public Set<Coordinate> getDeathShip(Coordinate coordinate) {
         return Set.copyOf(
                 deathShips.get(getShipDeathAtCoordinate(coordinate))//возвращаем не оригинальный список, а его копию, чтобы не нарушать инкапсуляцию,

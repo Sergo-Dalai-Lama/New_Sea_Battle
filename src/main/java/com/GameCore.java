@@ -33,6 +33,7 @@ public class GameCore {
         Ship ship = null;
         Orientation orientation = null;
         Coordinate coordinateUnSet = repositionShipCommand.coordinate1();
+        Orientation orientationUnSet = repositionShipCommand.orientation();
         Coordinate coordinateSet = repositionShipCommand.coordinate2();
         Orientation orientationSet = repositionShipCommand.orientation();
         UnSetShipCommand unSetShipCommand = new UnSetShipCommand(coordinateUnSet);
@@ -40,6 +41,10 @@ public class GameCore {
         ship = unSetShipResult.ship();
         SetShipCommand setShipCommand = new SetShipCommand(coordinateSet,ship,orientationSet);
         SetShipResult setShipResult = setShip(setShipCommand);//поставили корабль
+        if (!(setShipResult.outcome()==SetShipOutcome.SET)){
+            SetShipCommand reSetShipCommand = new SetShipCommand(coordinateUnSet,ship,orientationUnSet);
+            setShip(reSetShipCommand);//поставили корабль обратно на место
+        }
         return new RepositionShipResult(unSetShipResult,setShipResult);
     }
     public SetShipResult setShip(SetShipCommand setShipCommand) {
@@ -54,7 +59,7 @@ public class GameCore {
                     null
             );
         }
-        if (listShip.isShipOccupied(ship)){//проверяем, есть ли такой тип кораблей еще
+        if (listShip.isShipOccupied(ship)){//проверяем, есть ли такой корабль на поле
 
             return new SetShipResult(
                      coordinate,
@@ -223,7 +228,7 @@ public class GameCore {
     }
 
     public void generationShipFormation(){
-
+        listShip.clear();
         List<Coordinate> includeCoordinates = new ArrayList<>();
         for (int i = 0; i <GameConfig.ROWS; i++) {//создали список всех координат
             for (int j = 0; j <GameConfig.COLUMNS; j++) {
@@ -251,7 +256,7 @@ public class GameCore {
                 if (orientation == Orientation.HORIZONTAL) {//если горизонтальное положение
                     if (result.outcome() == SetShipOutcome.SET) {//проверить поставился ли корабль
                         //если да, то надо удалить координаты и корабль
-                        removeCoordinatesBlock(includeCoordinates,coordinate,ship);
+                        removeCoordinatesBlock(includeCoordinates,coordinate,ship,Orientation.HORIZONTAL);
                         includeShip.remove(ship);
                         flag = false;
 
@@ -260,7 +265,7 @@ public class GameCore {
                         result = this.setShip(setShipCommand);
                         if (result.outcome() == SetShipOutcome.SET) {//проверить поставился ли корабль
                             //если да, то надо удалить координаты и корабль
-                            removeCoordinatesBlock(includeCoordinates,coordinate,ship);
+                            removeCoordinatesBlock(includeCoordinates,coordinate,ship,Orientation.VERTICAL);
                             includeShip.remove(ship);
                             flag = false;
                         } else {//если оба варианта не прокатили - удалить координату
@@ -271,7 +276,7 @@ public class GameCore {
                 } else {
                     if (result.outcome() == SetShipOutcome.SET) {
 
-                        removeCoordinatesBlock(includeCoordinates,coordinate,ship);
+                        removeCoordinatesBlock(includeCoordinates,coordinate,ship,Orientation.VERTICAL);
                         includeShip.remove(ship);
                         flag = false;
 
@@ -282,7 +287,7 @@ public class GameCore {
 
                         if (result.outcome() == SetShipOutcome.SET) {
 
-                            removeCoordinatesBlock(includeCoordinates,coordinate,ship);
+                            removeCoordinatesBlock(includeCoordinates,coordinate,ship,Orientation.HORIZONTAL);
                             includeShip.remove(ship);
                             flag = false;
 
@@ -337,11 +342,15 @@ public class GameCore {
     if (coordinate.x()<0||coordinate.x()>=GameConfig.ROWS||coordinate.y()<0||coordinate.y()>=GameConfig.COLUMNS) return false;
     return true;
 }
-    private void removeCoordinatesBlock(List<Coordinate> includeCoordinates, Coordinate coordinate, Ship ship){
+    private void removeCoordinatesBlock(List<Coordinate> includeCoordinates, Coordinate coordinate, Ship ship,Orientation orientation) {
 
     List<Coordinate> coordinatesBlockSet = new ArrayList<>();//создали пустой список координат, которые надо удалить
     for (int i = 0;i<ship.getSize();i++) {//заполнили нужными для удаления координатами
-        coordinatesBlockSet.add(new Coordinate(coordinate.x()+i,coordinate.y()));
+        if (orientation == Orientation.HORIZONTAL) {
+            coordinatesBlockSet.add(new Coordinate(coordinate.x() + i, coordinate.y()));
+        }  else {
+            coordinatesBlockSet.add(new Coordinate(coordinate.x(), coordinate.y()+i));
+        }
     }
 
     for (Coordinate coordinateBlock : coordinatesBlockSet) {//пробежались по всем координатам, которые надо удалить
