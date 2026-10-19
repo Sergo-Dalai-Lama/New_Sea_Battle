@@ -143,9 +143,13 @@ public class LanternaInput implements Inputs{
         }
 
         String inputString = input.toString();
+
         int x = -1;
         int y = -1;
 
+        if (inputString.isEmpty()) {
+            return new UnSetShipCommand(new Coordinate(x,y));
+        }
         for (int i =0; i<GameConfig.ROWS; i++) {
             if (inputString.charAt(0)==rowNameX[i]) {
                 x = i;
@@ -182,37 +186,41 @@ public class LanternaInput implements Inputs{
 
         String inputString = input.toString();
         Orientation orientation = null;
-        int X1 = -1;
-        int Y1 = -1;
-        int X2 = -1;
-        int Y2 = -1;
+        int x1 = -1;
+        int y1 = -1;
+        int x2 = -1;
+        int y2 = -1;
+        if (!(input.length() == 5)) {
+            return new RepositionShipCommand(new Coordinate(x1,y1),new Coordinate(x2,y2),orientation);
+        }
+
         for (int i =0; i<GameConfig.ROWS; i++) {
             if (inputString.charAt(0)==rowNameX[i]) {
-                X1 = i;
+                x1 = i;
             }
 
         }
         for (int i =0; i<GameConfig.COLUMNS; i++) {
             if (inputString.charAt(1)==rowNameY[i]) {
-                Y1 = i;
+                y1 = i;
             }
         }
         for (int i =0; i<GameConfig.ROWS; i++) {
             if (inputString.charAt(2)==rowNameX[i]) {
-                X2 = i;
+                x2 = i;
             }
 
         }
         for (int i =0; i<GameConfig.COLUMNS; i++) {
             if (inputString.charAt(3)==rowNameY[i]) {
-                Y2 = i;
+                y2 = i;
             }
         }
         if (inputString.charAt(4)=='h'){orientation=Orientation.HORIZONTAL;}
         if (inputString.charAt(4)=='v'){orientation=Orientation.VERTICAL;}
 
-        Coordinate coordinate1 = new Coordinate(X1,Y1);
-        Coordinate coordinate2 = new Coordinate(X2,Y2);
+        Coordinate coordinate1 = new Coordinate(x1,y1);
+        Coordinate coordinate2 = new Coordinate(x2,y2);
         return new RepositionShipCommand(coordinate1,coordinate2,orientation);
     }
     @Override

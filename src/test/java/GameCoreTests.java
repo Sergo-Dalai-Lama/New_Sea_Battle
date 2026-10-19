@@ -1,4 +1,5 @@
 import com.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,6 +9,14 @@ import org.junit.jupiter.params.provider.EnumSource;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameCoreTests {
+    private ListShip listShip;
+    private GameCore gameCore;
+
+    @BeforeEach
+    public void setup() {
+        listShip = new ListShip();
+        gameCore = new GameCore(listShip);
+    }
 
     @ParameterizedTest
     @CsvSource({
@@ -17,8 +26,6 @@ public class GameCoreTests {
     })
     public void testUnSetShip_returnUnset(int x, int y) {
         //Arrange
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
         Coordinate coordinateSet = new Coordinate(x,y);
         Coordinate coordinateUnSet = new Coordinate(x,y);
         SetShipCommand setShipCommand = new SetShipCommand(coordinateSet,Ship.PATROL1,Orientation.HORIZONTAL);
@@ -34,8 +41,6 @@ public class GameCoreTests {
     @Test
     public void testUnSetShip_returnNonUnset() {
         //Arrange
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
         Coordinate coordinateSet = new Coordinate(1,1);
         Coordinate coordinateUnSet = new Coordinate(2,2);
         SetShipCommand setShipCommand = new SetShipCommand(coordinateSet,Ship.BATTLESHIP1,Orientation.HORIZONTAL);
@@ -51,8 +56,6 @@ public class GameCoreTests {
     @Test
     public void testSet_returnSet() {
 
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
         Coordinate coordinateSet = new Coordinate(1,1);
 
         SetShipCommand setShipCommand =  new SetShipCommand(coordinateSet,Ship.BATTLESHIP1,Orientation.HORIZONTAL);
@@ -64,8 +67,6 @@ public class GameCoreTests {
     @Test
     public void testSet_returnBeyondField() {
 
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
         Coordinate coordinateSet = new Coordinate(7,7);
 
         SetShipCommand setShipCommand =  new SetShipCommand(coordinateSet,Ship.BATTLESHIP1,Orientation.HORIZONTAL);
@@ -82,8 +83,6 @@ public class GameCoreTests {
     })
     public void testSet_returnSet_near_border(int x, int y) {
 
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
         Coordinate coordinateSet = new Coordinate(x,y);
 
         SetShipCommand setShipCommand =  new SetShipCommand(coordinateSet,Ship.PATROL1,Orientation.HORIZONTAL);
@@ -94,8 +93,6 @@ public class GameCoreTests {
     @Test
     public void testSet_returnAvailable_doubleTry() {
 
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
         Coordinate coordinateSet1 = new Coordinate(1,1);
         Coordinate coordinateSet2 = new Coordinate(5,5);
         SetShipCommand setShipCommand1 =  new SetShipCommand(coordinateSet1,Ship.BATTLESHIP1,Orientation.HORIZONTAL);
@@ -118,8 +115,6 @@ public class GameCoreTests {
     })
     public void testSet_returnBeyondField_near_border(int x, int y) {
 
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
         Coordinate coordinateSet = new Coordinate(x,y);
 
         SetShipCommand setShipCommand =  new SetShipCommand(coordinateSet,Ship.PATROL1,Orientation.HORIZONTAL);
@@ -130,8 +125,7 @@ public class GameCoreTests {
 
     @Test
     public void testReposition_returnSet() {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         Coordinate coordinateSet1 = new Coordinate(1,1);
         Coordinate coordinateSet2 = new Coordinate(2,2);
         SetShipCommand setShipCommand = new SetShipCommand(coordinateSet1,Ship.BATTLESHIP1,Orientation.HORIZONTAL);
@@ -145,8 +139,7 @@ public class GameCoreTests {
 
     @Test
     public void testReposition_returnNonUnset() {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         Coordinate coordinateSet1 = new Coordinate(1,1);
         Coordinate coordinateSet2 = new Coordinate(2,2);
         Coordinate coordinateSet3 = new Coordinate(3,3);
@@ -163,8 +156,7 @@ public class GameCoreTests {
 
     @Test
     public void testReposition_returnNonSet() {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         Coordinate coordinateSet1 = new Coordinate(1,1);
         Coordinate coordinateSet2 = new Coordinate(8,8);
         SetShipCommand setShipCommand = new SetShipCommand(coordinateSet1,Ship.BATTLESHIP1,Orientation.HORIZONTAL);
@@ -187,8 +179,7 @@ public class GameCoreTests {
             "100,200"
     })
     public void testAttack_returnInvalidTarget(int x, int y) {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         EnemySeaDisplayModel enemySea = new EnemySeaDisplayModel();
 
         AttackResult result = gameCore.attack(new AttackCommand(new Coordinate(x,y)));
@@ -206,8 +197,7 @@ public class GameCoreTests {
             "4,1"
     })
     public void testAttack_returnHit(int x, int y) {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         SetShipCommand setShipCommand = new SetShipCommand(new Coordinate(1,1),Ship.BATTLESHIP1,Orientation.HORIZONTAL);
         gameCore.setShip(setShipCommand);
         EnemySeaDisplayModel enemySea = new EnemySeaDisplayModel();
@@ -227,8 +217,7 @@ public class GameCoreTests {
             "9,0"
     })
     public void testAttack_returnMiss(int x, int y) {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         EnemySeaDisplayModel enemySea = new EnemySeaDisplayModel();
 
         AttackResult result = gameCore.attack(new AttackCommand(new Coordinate(x,y)));
@@ -241,8 +230,7 @@ public class GameCoreTests {
     @ParameterizedTest
     @EnumSource(Orientation.class)
     public void testAttack_marksKilledShip(Orientation orientation) {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         SetShipCommand setShipCommand = new SetShipCommand(new Coordinate(3,3),Ship.BATTLESHIP1,orientation);
 
         gameCore.setShip(setShipCommand);
@@ -270,8 +258,7 @@ public class GameCoreTests {
 
     @RepeatedTest(100)
     public void testGenerationShip_resultNotNull() {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         gameCore.generationShipFormation();
 
         MySeaDispayModel mySeaDispayModel = new MySeaDispayModel(listShip);
@@ -286,8 +273,7 @@ public class GameCoreTests {
 
     @RepeatedTest(200)
     public void testFieldGenerationShip() {
-        ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
+
         gameCore.generationShipFormation();
 
         MySeaDispayModel mySeaDispayModel = new MySeaDispayModel(listShip);
@@ -305,7 +291,6 @@ public class GameCoreTests {
 
     @Test
     public void testFieldGenerationNoShip() {
-        ListShip listShip = new ListShip();
 
         MySeaDispayModel mySeaDispayModel = new MySeaDispayModel(listShip);
 
