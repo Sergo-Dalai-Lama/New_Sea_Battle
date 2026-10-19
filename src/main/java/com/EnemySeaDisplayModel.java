@@ -1,5 +1,7 @@
 package com;
 
+import java.util.Set;
+
 public class EnemySeaDisplayModel {
 
     private TypeCellEnemy[][] enemySea;
@@ -23,7 +25,6 @@ public class EnemySeaDisplayModel {
     public void applyAttackResult(AttackResult result) {
 
         if (result.outcome()==AttackOutcome.INVALID_TARGET) {
-            System.out.println("Invalid target");
             return;
         }
 
@@ -49,4 +50,5 @@ public class EnemySeaDisplayModel {
             enemySea[result.coordinate().x()][result.coordinate().y()]=TypeCellEnemy.MISS;
         }
     }
+
 }

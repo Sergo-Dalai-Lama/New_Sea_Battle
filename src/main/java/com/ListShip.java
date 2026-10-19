@@ -100,5 +100,16 @@ public class ListShip {
         }
         return null;
     }
-
+/*
+    public int scoreList(){
+        int score = 0;
+        for (Ship ship : deathShips.keySet()) {
+                if (ship.getSize()==deathShips.get(ship).size()) {
+                    score += ship.getSize()*2;
+                } else {
+                    score += ship.getSize();
+                }
+        }
+        return score;
+    }*/
 }

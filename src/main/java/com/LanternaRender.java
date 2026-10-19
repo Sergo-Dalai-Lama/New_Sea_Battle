@@ -179,4 +179,13 @@ public void renderingMyRemainingShip(RemainingShipModel remainingShipModel){
             }
         }
     }
+
+    @Override
+    public void renderScore(ScoreModel scoreModel){
+
+        int score = scoreModel.getScore();
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+        screen.newTextGraphics().putString(26,4,"SCORE");
+        screen.newTextGraphics().putString(26,5,score+"");
+    }
 }

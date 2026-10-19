@@ -3,11 +3,11 @@ package com;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class GameCore {
+public class GameRules {
     private final ListShip listShip;
     private final Set<Coordinate> blockedCells;//семантически правильнее использовать set, а не list.
     //у меня хранятся уникальные координаты
-    public GameCore(ListShip listShip) {
+    public GameRules(ListShip listShip) {
         this.listShip = listShip;
         blockedCells = new HashSet<>();
 
@@ -157,7 +157,8 @@ public class GameCore {
                     false,
                     false,
                     null,
-                    AttackOutcome.INVALID_TARGET
+                    AttackOutcome.INVALID_TARGET,
+                    0
 
             );
         }
@@ -193,7 +194,8 @@ public class GameCore {
                             true,
                             true,
                             targets,
-                            AttackOutcome.GAME_FINISHED
+                            AttackOutcome.GAME_FINISHED,
+                            targets.size()+1
                     );
                 }
 
@@ -202,7 +204,8 @@ public class GameCore {
                         true,
                         true,
                         targets,
-                        AttackOutcome.DESTROYED
+                        AttackOutcome.DESTROYED,
+                        targets.size()+1
 
                 );
             }
@@ -211,7 +214,8 @@ public class GameCore {
                     true,
                     false,
                     null,
-                    AttackOutcome.HIT
+                    AttackOutcome.HIT,
+                    1
 
             );
         } else {
@@ -220,7 +224,8 @@ public class GameCore {
                     false,
                     false,
                     null,
-                    AttackOutcome.MISS
+                    AttackOutcome.MISS,
+                    0
 
             );
         }
@@ -342,6 +347,7 @@ public class GameCore {
     if (coordinate.x()<0||coordinate.x()>=GameConfig.ROWS||coordinate.y()<0||coordinate.y()>=GameConfig.COLUMNS) return false;
     return true;
 }
+
     private void removeCoordinatesBlock(List<Coordinate> includeCoordinates, Coordinate coordinate, Ship ship,Orientation orientation) {
 
     List<Coordinate> coordinatesBlockSet = new ArrayList<>();//создали пустой список координат, которые надо удалить

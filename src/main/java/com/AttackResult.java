@@ -7,6 +7,7 @@ public record AttackResult(
         boolean hit,
         boolean targetDestroyed,
         Set<Coordinate> targetsCoordinates,
-        AttackOutcome outcome
+        AttackOutcome outcome,
+        int scoreEarned
 ) {
 }

@@ -52,8 +52,8 @@ public class LanternaInputTest {
     public void inputSetShipTest(String text,SetShipOutcome setShipOutcome) throws IOException {
 
         ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
-        gameCore.setShip(new SetShipCommand(new Coordinate(3,3),Ship.CRUISER2,Orientation.VERTICAL));
+        GameRules gameRules = new GameRules(listShip);
+        gameRules.setShip(new SetShipCommand(new Coordinate(3,3),Ship.CRUISER2,Orientation.VERTICAL));
         Screen screen = mock(Screen.class);//создали мок-объект ввода данных
         List<KeyStroke>  keyStrokes = new ArrayList<>();
         for (char c : text.toCharArray()) {
@@ -68,7 +68,7 @@ public class LanternaInputTest {
         LanternaInput inputLanterna = new LanternaInput(screen);
         SetShipCommand command1 = inputLanterna.inputSetShips();
 
-        SetShipResult result = gameCore.setShip(command1);
+        SetShipResult result = gameRules.setShip(command1);
 
         assertEquals(setShipOutcome, result.outcome());
     }
@@ -84,8 +84,8 @@ public class LanternaInputTest {
     public void inputUnsetShipTest(String text,UnSetShipOutcome unSetShipOutcome) throws IOException {
 
         ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
-        gameCore.setShip(new SetShipCommand(new Coordinate(0,1),Ship.CRUISER2,Orientation.VERTICAL));
+        GameRules gameRules = new GameRules(listShip);
+        gameRules.setShip(new SetShipCommand(new Coordinate(0,1),Ship.CRUISER2,Orientation.VERTICAL));
         Screen screen = mock(Screen.class);
         List<KeyStroke> keyStrokes = new ArrayList<>();
         for (char c : text.toCharArray()) {
@@ -98,7 +98,7 @@ public class LanternaInputTest {
         );
         LanternaInput inputLanterna = new LanternaInput(screen);
         UnSetShipCommand unSetShipCommand = inputLanterna.inputUnSetShip();
-        UnSetShipResult unSetShipResult1 = gameCore.unSetShip(unSetShipCommand);
+        UnSetShipResult unSetShipResult1 = gameRules.unSetShip(unSetShipCommand);
 
         assertEquals(unSetShipOutcome, unSetShipResult1.unSetShipOutcome());
     }
@@ -116,9 +116,9 @@ public class LanternaInputTest {
     })
     public void inputRepositionShipTest(String text,UnSetShipOutcome unSetShipOutcome,SetShipOutcome setShipOutcome) throws IOException {
         ListShip listShip = new ListShip();
-        GameCore gameCore = new GameCore(listShip);
-        gameCore.setShip(new SetShipCommand(new Coordinate(0,1),Ship.CRUISER2,Orientation.HORIZONTAL));
-        gameCore.setShip(new SetShipCommand(new Coordinate(5,5),Ship.CRUISER1,Orientation.VERTICAL));
+        GameRules gameRules = new GameRules(listShip);
+        gameRules.setShip(new SetShipCommand(new Coordinate(0,1),Ship.CRUISER2,Orientation.HORIZONTAL));
+        gameRules.setShip(new SetShipCommand(new Coordinate(5,5),Ship.CRUISER1,Orientation.VERTICAL));
         Screen screen = mock(Screen.class);
         List<KeyStroke> keyStrokes = new ArrayList<>();
         for (char c : text.toCharArray()) {
@@ -131,7 +131,7 @@ public class LanternaInputTest {
         );
         LanternaInput inputLanterna = new LanternaInput(screen);
         RepositionShipCommand command = inputLanterna.inputRepositionShip();
-        RepositionShipResult result = gameCore.repositionShip(command);
+        RepositionShipResult result = gameRules.repositionShip(command);
 
         assertEquals(unSetShipOutcome,result.unSetShipResult().unSetShipOutcome());
         assertEquals(setShipOutcome, result.setShipResult().outcome());

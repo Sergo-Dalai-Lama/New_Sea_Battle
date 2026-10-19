@@ -10,4 +10,5 @@ public interface Render {
     void renderGameOver();
     void renderSetShips(ListShip listShip);
     void renderingMyRemainingShip(RemainingShipModel remainingShipModel);
+    void renderScore(ScoreModel scoreModel);
 }
