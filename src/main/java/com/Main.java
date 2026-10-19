@@ -13,7 +13,7 @@ static void main() throws IOException {
     LanternaRender render = new LanternaRender();//создал отрисовку экрана
     LanternaInput inputLanterna = new LanternaInput(render.screen);//создали класс вводимых данных, связанных с экраном отрисовки
     System.out.println("Начало игрового цикла");
-    /*
+
     boolean flagSetShip1 = true ;
     while (flagSetShip1) {//состояние "установка кораблей"
         //переписать код так, чтобы из циклов вытащить в отдельное состояние игры
@@ -28,7 +28,7 @@ static void main() throws IOException {
         System.out.println("Выбрана команда set");
         SetShipCommand command1 = inputLanterna.inputSetShips();
         System.out.println("Введены параметры корабля");
-        SetShipResult result1 = gameCore1.setShip(command1);
+        SetShipResult result1 = gameRules1.setShip(command1);
 
         if (result1.outcome() == SetShipOutcome.SET_FINISHED) {
             flagSetShip1 = false;
@@ -45,14 +45,14 @@ static void main() throws IOException {
     if (shipSetting==ShipSetting.UNSET){//если команда убрать корабль
         System.out.println("Выбрана команда unset");
         UnSetShipCommand unSet = inputLanterna.inputUnSetShip();
-        UnSetShipResult unSetResult = gameCore1.unSetShip(unSet);
+        UnSetShipResult unSetResult = gameRules1.unSetShip(unSet);
         remainingShipModel1.applyUnSetShipResult(unSetResult);
         render.renderingMyRemainingShip(remainingShipModel1);
     }
         if (shipSetting==ShipSetting.REPOSITION){//если команда убрать корабль
             System.out.println("Выбрана команда reposition");
            RepositionShipCommand repositionShipCommand = inputLanterna.inputRepositionShip();
-           RepositionShipResult repositionShipResult = gameCore1.repositionShip(repositionShipCommand);
+           RepositionShipResult repositionShipResult = gameRules1.repositionShip(repositionShipCommand);
            if (repositionShipResult.unSetShipResult().unSetShipOutcome()==UnSetShipOutcome.NON_UNSET){
                System.out.println("Корабль не найден");
            } else {
@@ -70,11 +70,11 @@ static void main() throws IOException {
         render.renderSetShips(shipDynamic1);
         render.refresh();
         render.clear();
-    }*/
+    }
 
     System.out.println("Generation ship");
     gameRules2.generationShipFormation();//сгенерировали поле для 2 игрока
-    gameRules1.generationShipFormation();
+
     EnemySeaDisplayModel enemySea1 = new EnemySeaDisplayModel();
     MySeaDispayModel mySea1 =  new MySeaDispayModel(shipDynamic1);
     EnemySeaDisplayModel enemySea2 = new EnemySeaDisplayModel();
