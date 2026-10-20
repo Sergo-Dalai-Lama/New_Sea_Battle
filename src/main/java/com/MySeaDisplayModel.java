@@ -2,10 +2,10 @@ package com;
 
 import java.util.Set;
 
-public class MySeaDispayModel {
+public class MySeaDisplayModel {
     private final ListShip listShip;
     private TypeCellMySea[][] mySea;
-    public MySeaDispayModel(ListShip listShip) {
+    public MySeaDisplayModel(ListShip listShip) {
         this.listShip = listShip;
         fieldGenerate();
     }

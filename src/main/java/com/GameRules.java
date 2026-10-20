@@ -5,14 +5,19 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GameRules {
     private final ListShip listShip;
-    private final Set<Coordinate> blockedCells;//семантически правильнее использовать set, а не list.
-    //у меня хранятся уникальные координаты
+    private final List<Coordinate> unBlockedCells;
     public GameRules(ListShip listShip) {
         this.listShip = listShip;
-        blockedCells = new HashSet<>();
-
+        unBlockedCells = new ArrayList<>();
+        for (int i = 0;i<GameConfig.ROWS;i++){
+            for (int j = 0;j<GameConfig.COLUMNS;j++){
+                unBlockedCells.add(new Coordinate(i,j));
+            }
+        }
     }
-
+    public List<Coordinate> getUnBlockedCells() {
+        return List.copyOf(unBlockedCells);
+    }
     public UnSetShipResult unSetShip(UnSetShipCommand unSetShipCommand) {
         Ship ship = null;
         if (listShip.isShipOccupied(unSetShipCommand.coordinate())){//если координат корабля нет в списке
@@ -162,8 +167,7 @@ public class GameRules {
 
             );
         }
-
-        blockedCells.add(coordinate);
+        unBlockedCells.remove(coordinate);
 
         if (listShip.shipLiveAtCoordinate(coordinate)){
             listShip.deleteDeck(coordinate);//перенесли борт корабля в поврежденные
@@ -182,8 +186,7 @@ public class GameRules {
                                     && target.y() + k >= 0
                                     && target.y() + k < GameConfig.COLUMNS) {
                                 Coordinate temp = new Coordinate(target.x() + j, target.y() + k);
-                                blockedCells.add(temp);//удалили проверку на входимость элемента,
-                                // так как после замены List на Set теперь в координатах хранятся уникальные значения
+                                unBlockedCells.remove(temp);
                             }
                         }
                     }
@@ -343,7 +346,7 @@ public class GameRules {
 
     private boolean canAttack(Coordinate coordinate){
 
-    if (blockedCells.contains(coordinate))return false;
+    if (unBlockedCells.contains(coordinate))return true;
     if (coordinate.x()<0||coordinate.x()>=GameConfig.ROWS||coordinate.y()<0||coordinate.y()>=GameConfig.COLUMNS) return false;
     return true;
 }

@@ -3,7 +3,7 @@ package com;
 import java.io.IOException;
 
 public interface Render {
-    void renderingMySea(MySeaDispayModel mySeaDispayModel) throws IOException;
+    void renderingMySea(MySeaDisplayModel mySeaDisplayModel) throws IOException;
     void renderingEnemySea(EnemySeaDisplayModel enemySeaDisplayModel);
     void renderingMyBorder();
     void renderingEnemyBorder();

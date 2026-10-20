@@ -76,9 +76,9 @@ static void main() throws IOException {
     gameRules2.generationShipFormation();//сгенерировали поле для 2 игрока
 
     EnemySeaDisplayModel enemySea1 = new EnemySeaDisplayModel();
-    MySeaDispayModel mySea1 =  new MySeaDispayModel(shipDynamic1);
+    MySeaDisplayModel mySea1 =  new MySeaDisplayModel(shipDynamic1);
     EnemySeaDisplayModel enemySea2 = new EnemySeaDisplayModel();
-    MySeaDispayModel mySea2 =  new MySeaDispayModel(shipDynamic2);
+    MySeaDisplayModel mySea2 =  new MySeaDisplayModel(shipDynamic2);
     ScoreModel scoreModel1 = new ScoreModel();
     ScoreModel scoreModel2 = new ScoreModel();
     System.out.println("RUN");
@@ -130,7 +130,7 @@ static void main() throws IOException {
     render.refresh();
 }
 
-public static void renderGameRun(LanternaRender render, MySeaDispayModel mySea1, EnemySeaDisplayModel enemySea2,ScoreModel scoreModel1) throws IOException {
+public static void renderGameRun(LanternaRender render, MySeaDisplayModel mySea1, EnemySeaDisplayModel enemySea2, ScoreModel scoreModel1) throws IOException {
     render.clear();
     render.renderingMyBorder();
     render.renderingEnemyBorder();

@@ -1,7 +1,5 @@
 package com;
 
-import java.util.Set;
-
 public class EnemySeaDisplayModel {
 
     private TypeCellEnemy[][] enemySea;

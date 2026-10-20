@@ -3,8 +3,6 @@ package com;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -44,24 +42,24 @@ public void refresh() throws IOException {
         screen.refresh();
     }
 @Override
-public void renderingMySea(MySeaDispayModel mySeaDispayModel) throws IOException {
+public void renderingMySea(MySeaDisplayModel mySeaDisplayModel) throws IOException {
         int oy = 2;
         int ox = 1;
         for (int j = 0; j<GameConfig.ROWS; j++){
             for (int i = 0; i<GameConfig.COLUMNS; i++){
-                if (mySeaDispayModel.getType(i,j)==TypeCellMySea.SEA) {
+                if (mySeaDisplayModel.getType(i,j)==TypeCellMySea.SEA) {
                     textGraphics.setForegroundColor(TextColor.ANSI.BLUE);
                     textGraphics.setCharacter(i+ox,j+oy,'⛝');
                 }
-                if (mySeaDispayModel.getType(i,j)==TypeCellMySea.MISS) {
+                if (mySeaDisplayModel.getType(i,j)==TypeCellMySea.MISS) {
                     textGraphics.setForegroundColor(TextColor.ANSI.YELLOW);
                     textGraphics.setCharacter(i+ox,j+oy,'⛝');
                 }
-                if (mySeaDispayModel.getType(i,j)==TypeCellMySea.DECK) {
+                if (mySeaDisplayModel.getType(i,j)==TypeCellMySea.DECK) {
                     textGraphics.setForegroundColor(TextColor.ANSI.GREEN);
                     textGraphics.setCharacter(i+ox,j+oy,'⛝');
                 }
-                if (mySeaDispayModel.getType(i,j)==TypeCellMySea.HIT) {
+                if (mySeaDisplayModel.getType(i,j)==TypeCellMySea.HIT) {
                     textGraphics.setForegroundColor(TextColor.ANSI.RED);
                     textGraphics.setCharacter(i+ox,j+oy,'⛝');
                 }

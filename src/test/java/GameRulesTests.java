@@ -261,12 +261,12 @@ public class GameRulesTests {
 
         gameRules.generationShipFormation();
 
-        MySeaDispayModel mySeaDispayModel = new MySeaDispayModel(listShip);
+        MySeaDisplayModel mySeaDisplayModel = new MySeaDisplayModel(listShip);
 
         assertEquals(10,listShip.sizeLive());
         for (int x = 0; x < GameConfig.ROWS; x++) {
             for (int y = 0; y < GameConfig.COLUMNS; y++) {
-                assertNotNull(mySeaDispayModel.getType(x, y));
+                assertNotNull(mySeaDisplayModel.getType(x, y));
             }
         }
     }
@@ -276,14 +276,14 @@ public class GameRulesTests {
 
         gameRules.generationShipFormation();
 
-        MySeaDispayModel mySeaDispayModel = new MySeaDispayModel(listShip);
+        MySeaDisplayModel mySeaDisplayModel = new MySeaDisplayModel(listShip);
 
         for (int x = 0; x < GameConfig.ROWS; x++) {
             for (int y = 0; y < GameConfig.COLUMNS; y++) {
-                if (mySeaDispayModel.getType(x,y)==TypeCellMySea.DECK) {
-                    assertTrue(mySeaDispayModel.getType(x, y) == TypeCellMySea.DECK && listShip.isShipOccupied(new Coordinate(x, y)));
+                if (mySeaDisplayModel.getType(x,y)==TypeCellMySea.DECK) {
+                    assertTrue(mySeaDisplayModel.getType(x, y) == TypeCellMySea.DECK && listShip.isShipOccupied(new Coordinate(x, y)));
                 } else {
-                    assertTrue(mySeaDispayModel.getType(x, y) == TypeCellMySea.SEA && !listShip.isShipOccupied(new Coordinate(x, y)));
+                    assertTrue(mySeaDisplayModel.getType(x, y) == TypeCellMySea.SEA && !listShip.isShipOccupied(new Coordinate(x, y)));
                 }
             }
         }
@@ -292,11 +292,11 @@ public class GameRulesTests {
     @Test
     public void testFieldGenerationNoShip() {
 
-        MySeaDispayModel mySeaDispayModel = new MySeaDispayModel(listShip);
+        MySeaDisplayModel mySeaDisplayModel = new MySeaDisplayModel(listShip);
 
         for (int x = 0; x < GameConfig.ROWS; x++) {
             for (int y = 0; y < GameConfig.COLUMNS; y++) {
-                    assertEquals(TypeCellMySea.SEA,mySeaDispayModel.getType(x, y));
+                    assertEquals(TypeCellMySea.SEA, mySeaDisplayModel.getType(x, y));
             }
         }
     }
