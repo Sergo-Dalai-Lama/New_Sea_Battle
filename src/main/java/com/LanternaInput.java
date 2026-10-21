@@ -244,6 +244,9 @@ public class LanternaInput implements Inputs{
         }
         int x = -1;
         int y = -1;
+        if (!(input.length() == 2)) {
+            return new AttackCommand(new Coordinate(x,y));
+        }
         String coordinateString = input.toString();
         for (int i =0; i<GameConfig.ROWS; i++){
             if (coordinateString.charAt(0)==rowNameX[i]){

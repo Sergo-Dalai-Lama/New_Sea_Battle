@@ -77,7 +77,13 @@ public class ListShip {
     }
 
     public int sizeLive(){
-        return allListShips.size();
+        int size = 0;
+        for (var entry : allListShips.entrySet()) {
+            Ship ship = entry.getKey();
+            if (!allListShips.get(ship).isEmpty()) size++;
+        }
+
+        return size;
     }
 
     public int sizeDeath(){return deathShips.size();}

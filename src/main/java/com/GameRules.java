@@ -191,7 +191,7 @@ public class GameRules {
                         }
                     }
                 }
-                if (listShip.sizeDeath()==Ship.values().length){//сначала проверить - все ли корабли убиты
+                if (listShip.sizeLive()==0){//сначала проверить - все ли корабли убиты
                     return new AttackResult(
                             coordinate,
                             true,

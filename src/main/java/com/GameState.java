@@ -5,5 +5,6 @@ public enum GameState {
     GAME_OVER,
     FAILED_STATE,
     SHIP_DEPLOYMENT,
-    SHIP_DESTROYED
+    SHIP_DESTROYED,
+    WIN
 }

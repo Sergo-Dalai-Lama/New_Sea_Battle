@@ -1,0 +1,33 @@
+
+<configuration>
+
+    <appender name="CONSOLE"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} %-5level [%thread] %logger{20} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE"
+              class="ch.qos.logback.core.FileAppender">
+        <file>logs/app.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>
+
+<!--Что здесь происходит:
+- CONSOLE — выводит сообщения в консоль IntelliJ.
+- FILE — записывает сообщения в logs/app.log относительно рабочей директории запуска.
+- append=true — дописывает новые сообщения в существующий файл, а не перезаписывает его.
+- root level="DEBUG" — включает уровни DEBUG, INFO, WARN и ERROR, а также TRACE не выводит.
+- pattern — задаёт формат строки: время, уровень, поток, имя логгера и сообщение.
+Каждый appender-ref указывает, куда отправлять сообщения. Поскольку подключены оба обработчика, запись попадёт и в консоль, и в файл.-->
