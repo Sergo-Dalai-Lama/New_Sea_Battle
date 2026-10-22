@@ -1,5 +1,11 @@
 package com;
 
+import com.core.ListShip;
+import com.displayModel.EnemySeaDisplayModel;
+import com.displayModel.MySeaDisplayModel;
+import com.displayModel.RemainingShipModel;
+import com.displayModel.ScoreModel;
+
 import java.io.IOException;
 
 public interface Render {

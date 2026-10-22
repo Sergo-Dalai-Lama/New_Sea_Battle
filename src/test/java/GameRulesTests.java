@@ -1,4 +1,8 @@
-import com.*;
+import com.core.*;
+import com.displayModel.EnemySeaDisplayModel;
+import com.displayModel.MySeaDisplayModel;
+import com.displayModel.TypeCellEnemy;
+import com.displayModel.TypeCellMySea;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -280,7 +284,7 @@ public class GameRulesTests {
 
         for (int x = 0; x < GameConfig.ROWS; x++) {
             for (int y = 0; y < GameConfig.COLUMNS; y++) {
-                if (mySeaDisplayModel.getType(x,y)==TypeCellMySea.DECK) {
+                if (mySeaDisplayModel.getType(x,y)== TypeCellMySea.DECK) {
                     assertTrue(mySeaDisplayModel.getType(x, y) == TypeCellMySea.DECK && listShip.isShipOccupied(new Coordinate(x, y)));
                 } else {
                     assertTrue(mySeaDisplayModel.getType(x, y) == TypeCellMySea.SEA && !listShip.isShipOccupied(new Coordinate(x, y)));

@@ -1,5 +1,7 @@
 package com;
 
+import com.core.*;
+
 import java.io.IOException;
 
 public interface Inputs {
