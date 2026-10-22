@@ -1,10 +1,11 @@
 package com;
 
-import java.io.IOException;
+
+import javax.swing.*;
 
 public class Main{
-static void main() throws IOException {
-
+static void main() throws Exception {
+    SwingUtilities.invokeLater(SwingStartGame::new);
 }
 
 

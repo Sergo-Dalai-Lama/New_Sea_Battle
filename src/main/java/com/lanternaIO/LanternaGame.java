@@ -1,11 +1,10 @@
-package com;
+package com.lanternaIO;
 
 import com.core.*;
 import com.displayModel.EnemySeaDisplayModel;
 import com.displayModel.MySeaDisplayModel;
 import com.displayModel.RemainingShipModel;
 import com.displayModel.ScoreModel;
-import com.lanternaIO.*;
 
 import java.io.IOException;
 import java.util.List;
