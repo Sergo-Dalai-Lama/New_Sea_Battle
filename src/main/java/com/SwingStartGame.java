@@ -11,15 +11,18 @@ import java.awt.*;
 import java.util.List;
 
 public class SwingStartGame extends JPanel {
-    ListShip listShip =  new ListShip();
-    GameRules gameRules = new GameRules(listShip);
-    RemainingShipModel remainingShipModel = new RemainingShipModel();
+    private final ListShip listShip =  new ListShip();
+    private final GameRules gameRules = new GameRules(listShip);
+    private final RemainingShipModel remainingShipModel = new RemainingShipModel();
     JFrame frame =  new JFrame("New Sea Battle");
 
     public SwingStartGame() {
         setPreferredSize(new Dimension(SwingConfig.WIDTH, SwingConfig.HEIGHT ));
         setBackground(Color.gray);
         setLayout(null);
+        JButton battleship = new ShipButton(4);
+        battleship.setBounds(0,0,SwingConfig.WIDTH_SEA/GameConfig.ROWS*4,SwingConfig.HEIGHT_SEA/GameConfig.COLUMNS );
+        add(battleship);
         frame.add(this);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
@@ -29,7 +32,7 @@ public class SwingStartGame extends JPanel {
     }
 
     @Override
-    public  void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         paintSea(g);
         paintListShips(g);
@@ -70,11 +73,7 @@ public class SwingStartGame extends JPanel {
             int x = (int) (0.65*SwingConfig.WIDTH);
             for (int j = 0; j < mySeaRemainingSetShipModel.get(i).length; j++) {//цикл по кораблям типа
                 for (int k = 0; k < 4-i; k++) {//цикл по бортам одного корабля
-                    if (mySeaRemainingSetShipModel.get(i)[j] == null) {
-                        frameDeck.setColor(Color.black);
-                        frameDeck.setStroke(new BasicStroke(1));
-                        frameDeck.drawRect(x+k*widthDeck,y+i*heightDeck,widthDeck,heightDeck);
-                    } else {
+                    if (mySeaRemainingSetShipModel.get(i)[j] != null) {
                         frameDeck.setColor(Color.black);
                         frameDeck.setStroke(new BasicStroke(1));
                         frameDeck.drawRect(x+k*widthDeck,y+i*heightDeck,widthDeck,heightDeck);
@@ -88,4 +87,5 @@ public class SwingStartGame extends JPanel {
         }
 
     }
+
 }
