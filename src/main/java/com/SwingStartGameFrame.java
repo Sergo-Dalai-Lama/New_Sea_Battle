@@ -3,13 +3,10 @@ package com;
 import javax.swing.*;
 import java.awt.*;
 import static com.ColorStartGame.BACKGROUND;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+
 //запомнить порядок настройки окна
 public class SwingStartGameFrame extends JFrame {
-    private int offseX;
-    private int offseY;
+
     public SwingStartGameFrame() {
         setTitle("New Sea Battle");//назначить имя окна
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//назначить по умолчанию закрытие окна
@@ -24,29 +21,12 @@ public class SwingStartGameFrame extends JFrame {
         //размеров основания
         swingStartGameSea.setLocation(0, y);//работает если указать setBounds непосредственно в объекте
         contentPane.add(swingStartGameSea);//добавить панель на основание только после инициализации и настройки основания
-        SwingStartGameRemaining swingStartGameRemaining = new SwingStartGameRemaining();
+        SwingStartGameRemaining swingStartGameRemaining = new SwingStartGameRemaining(this,swingStartGameSea);
         int x = getContentPane().getWidth() - SwingConfig.WIDTH_SEA + SwingConfig.WIDTH_DECK;
         swingStartGameRemaining.setLocation(x, y);
         contentPane.add(swingStartGameRemaining);
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
-
-        addMouseListener(new  MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e){
-                offseX = e.getX();
-                offseY = e.getY();
-            }
-        });
-        addMouseMotionListener(new   MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e){
-                int x = getX()+e.getX()-offseX;
-                int y = getY()+e.getY()-offseY;
-                setLocation(x,y);
-            }
-        });
     }
-
 }
