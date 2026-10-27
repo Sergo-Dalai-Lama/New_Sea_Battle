@@ -29,7 +29,8 @@ public NewClass(NewClass other) {
 this.name;//скопировать примитив или immutable
 this.value = new Value(other.value);//скопировать с созданием нового объекта mutable объект
 	}
-}```
+}
+```
 
 Здесь конструкция public NewClass(NewClass other) называется копировальным конструктором. Потом можно писать NewClass copy = new Newclacc(riginal); который можно расшифровывать как "создать новый NewClass, используя существующий NewClass original как источник данных.
 
@@ -39,7 +40,7 @@ this.value = new ArrayList<>(other.value);
 У record автоматически создается canonical constructor, поэтому для создания копии можно просто писать NewClass copy = new Newclass(riginal).
 
 Если List<NewClass>, то нужно глубокое копирование и для record, потому что стандартного копирования его не достаточно. Стандартное копирование списка сложных объектов такое:
-
+```
 record NewClass (Srting name, List<OtherClass> other) {
 public NewClass(NewClass otherObject) {
 this(
@@ -51,3 +52,11 @@ otherObject.other()
 );
 	}
 }
+```
+
+#Работа с JFrame и JPanel
+Когда настраиваем окно JFrame - сначала не известен размер окна и его содержимого. Не известен цвет. Окно не может быть без содержимого и если настраивать параметры
+при отсутствующем содержимом, они могут отображаться некорректно. Поэтому необходимо добавить основание JPanel под названием contentPane.
+После добавления contentPane надо настроить его через setColor - настройка цвета, setPrefferedSize - настройка предпочтительного размера.
+Настройки применяются только после метода pack(), который по сути применит настройки и после этого можно будет центрировать добавленные поверх contentPane объектов.
+setLocation объектов работает только если я в них настроил setBounds, в ином случае надо применять setBounds к экземпляру объекта
