@@ -9,7 +9,6 @@ public class SwingStartGameRemaining extends JPanel {
     private RemainingShipModel remainingShipModel = new RemainingShipModel();
     private SwingStartGameFrame frame;
     private SwingStartGameSea gameSea;
-    private SwingStartGameRemaining gameRemaining;
     public SwingStartGameRemaining(SwingStartGameFrame frame,SwingStartGameSea gameSea) {
         this.frame = frame;
         this.gameSea = gameSea;
@@ -28,7 +27,7 @@ public class SwingStartGameRemaining extends JPanel {
             for (int j = 0; j < remainingShipModel.getMySeaRemainingSetShipModel().get(i).length; j++){//цикл по кораблям типа
                    if (remainingShipModel.getMySeaRemainingSetShipModel().get(i)[j]!=null){
                         ShipButton shipButton = new ShipButton(remainingShipModel.getMySeaRemainingSetShipModel().get(i)[j],frame,gameSea);//создали кнопку-корабль
-                        this.add(shipButton);
+                        this.add(shipButton,0);
                         shipButton.setLocation((j*remainingShipModel.getMySeaRemainingSetShipModel().get(i)[j].getSize()+k)*SwingConfig.WIDTH_DECK,
                                 i*2*SwingConfig.HEIGHT_DECK);//указали ее координату
                     }
