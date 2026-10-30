@@ -64,14 +64,16 @@ public class SwingStartGameSea extends JPanel {
     public SetShipResult setShip(SetShipCommand command) {
         return  gameRules.setShip(command);
     }
-    public void unSetShip(UnSetShipCommand command) {
-        gameRules.unSetShip(command);
-    }
+
     public List<Point> getPoints() {
         return List.copyOf(points);
     }
-    public void paintByResult(SetShipResult result, Orientation orientation,Ship ship) {
-
+    public void paintByResult(Coordinate coordinate,Orientation orientation,Ship ship) {
+        SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
+        SetShipResult result = gameRules.setShip(command);
+        if (result.deliveredShip() != null) {
+            gameRules.unSetShip(new UnSetShipCommand(coordinate));
+        }
             if (result.outcome()!=SetShipOutcome.SET) {
                if (orientation == Orientation.HORIZONTAL) {
                    for (int i = 0; i < ship.getSize(); i++) {

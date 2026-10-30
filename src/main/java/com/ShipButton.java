@@ -133,10 +133,7 @@ public class ShipButton extends JButton {
                             targetPanel.generatePreCanSetResultTrue();
                             newCoordinate = coordinate;
                             newOrientation = orientation;
-                            SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
-                            SetShipResult result = targetPanel.setShip(command);
-                            targetPanel.paintByResult(result,orientation,ship);
-                            targetPanel.unSetShip(new UnSetShipCommand(coordinate));
+                            targetPanel.paintByResult(coordinate,orientation,ship);
                         }
                     }
                 }
@@ -183,7 +180,6 @@ public class ShipButton extends JButton {
                 g2d.drawRect(0,i*SwingConfig.HEIGHT_DECK,SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK);
             }
         }
-
     }
 
     private Point findNearestSnapPoint(Point point) {
@@ -205,7 +201,7 @@ public class ShipButton extends JButton {
 
     private void returnShip() {
         orientation = Orientation.HORIZONTAL;
-        setBounds(0, 0, SwingConfig.WIDTH_DECK*ship.getSize(), SwingConfig.HEIGHT_DECK);
+        setSize(SwingConfig.WIDTH_DECK*ship.getSize(), SwingConfig.HEIGHT_DECK);
         Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
                 contentPane,
                 initialPosition,
@@ -227,10 +223,10 @@ public class ShipButton extends JButton {
     private void rotate() {
         newCoordinate = null;
         if (orientation == Orientation.HORIZONTAL) {
-            setBounds(0, 0, SwingConfig.WIDTH_DECK, SwingConfig.HEIGHT_DECK*ship.getSize());
+            setSize( SwingConfig.WIDTH_DECK, SwingConfig.HEIGHT_DECK*ship.getSize());
             orientation = Orientation.VERTICAL;
         } else {
-            setBounds(0, 0, SwingConfig.WIDTH_DECK * ship.getSize(), SwingConfig.HEIGHT_DECK);
+            setSize( SwingConfig.WIDTH_DECK * ship.getSize(), SwingConfig.HEIGHT_DECK);
             orientation = Orientation.HORIZONTAL;
         }
         repaint();
