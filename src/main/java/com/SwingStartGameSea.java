@@ -89,6 +89,7 @@ public class SwingStartGameSea extends JPanel {
            }
             repaint();
     }
+
     public void generatePreCanSetResultTrue() {
         for (int i = 0; i < GameConfig.ROWS; i++) {
             for (int j = 0; j < GameConfig.COLUMNS; j++) {

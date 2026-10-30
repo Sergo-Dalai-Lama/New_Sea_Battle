@@ -14,16 +14,16 @@ public class ShipButton extends JButton {
     private final Container contentPane;
     private Container sourcePanel;//для сохранения информации об исходной панели
     private final Ship ship;
-    private Orientation orientation;
+    private Orientation orientation = Orientation.HORIZONTAL;
     private Point offset;
     private Point initialPosition;
     private Coordinate newCoordinate = null;
+    private Orientation newOrientation = null;
     private  final int maxDistance = SwingConfig.WIDTH_DECK;
     public ShipButton( Ship ship,SwingStartGameFrame frame,SwingStartGameSea targetPanel) {
         this.ship = ship;
         this.contentPane = frame.getContentPane();
         this.targetPanel = targetPanel;
-        orientation = Orientation.HORIZONTAL;
         setLayout(null);
         setBounds(0, 0, SwingConfig.WIDTH_DECK * ship.getSize(), SwingConfig.HEIGHT_DECK);
         setBorderPainted(false);
@@ -32,6 +32,19 @@ public class ShipButton extends JButton {
         addMouseListener(new  MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e){//если нажали на кнопку, то что делать
+
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    rotate();
+                    contentPane.revalidate();
+                    contentPane.repaint();
+
+                    sourcePanel.revalidate();
+                    sourcePanel.repaint();
+
+                    targetPanel.revalidate();
+                    targetPanel.repaint();
+                    return;
+                }
                     sourcePanel = getParent();//запоминаем исходную панель
 
                     initialPosition = SwingUtilities.convertPoint(//перевели координаты в contentPane
@@ -64,6 +77,7 @@ public class ShipButton extends JButton {
 
                      Point point = findNearestSnapPoint(targetPosition);
                      if (point != null) {
+                         targetPanel.generatePreCanSetResultTrue();
                          Coordinate coordinate = new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
                          SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
                          SetShipResult result = targetPanel.setShip(command);
@@ -111,9 +125,14 @@ public class ShipButton extends JButton {
                     Point point = findNearestSnapPoint(targetPosition);
                     if (point != null) {
                         Coordinate coordinate = new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
-                        if (newCoordinate==null||coordinate.x() != newCoordinate.x() || coordinate.y() != newCoordinate.y()) {
+                        if (newCoordinate==null||
+                                coordinate.x() != newCoordinate.x() ||
+                                coordinate.y() != newCoordinate.y() ||
+                                orientation != newOrientation
+                        ) {
                             targetPanel.generatePreCanSetResultTrue();
                             newCoordinate = coordinate;
+                            newOrientation = orientation;
                             SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
                             SetShipResult result = targetPanel.setShip(command);
                             targetPanel.paintByResult(result,orientation,ship);
@@ -164,6 +183,7 @@ public class ShipButton extends JButton {
                 g2d.drawRect(0,i*SwingConfig.HEIGHT_DECK,SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK);
             }
         }
+
     }
 
     private Point findNearestSnapPoint(Point point) {
@@ -182,8 +202,10 @@ public class ShipButton extends JButton {
 
         return null;
     }
+
     private void returnShip() {
         orientation = Orientation.HORIZONTAL;
+        setBounds(0, 0, SwingConfig.WIDTH_DECK*ship.getSize(), SwingConfig.HEIGHT_DECK);
         Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
                 contentPane,
                 initialPosition,
@@ -192,5 +214,25 @@ public class ShipButton extends JButton {
         contentPane.remove(ShipButton.this);
         sourcePanel.add(ShipButton.this,0);
         setLocation(sourcePosition);
+        contentPane.revalidate();
+        contentPane.repaint();
+
+        sourcePanel.revalidate();
+        sourcePanel.repaint();
+
+        targetPanel.revalidate();
+        targetPanel.repaint();
+    }
+
+    private void rotate() {
+        newCoordinate = null;
+        if (orientation == Orientation.HORIZONTAL) {
+            setBounds(0, 0, SwingConfig.WIDTH_DECK, SwingConfig.HEIGHT_DECK*ship.getSize());
+            orientation = Orientation.VERTICAL;
+        } else {
+            setBounds(0, 0, SwingConfig.WIDTH_DECK * ship.getSize(), SwingConfig.HEIGHT_DECK);
+            orientation = Orientation.HORIZONTAL;
+        }
+        repaint();
     }
 }
