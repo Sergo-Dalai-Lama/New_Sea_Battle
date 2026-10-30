@@ -1,8 +1,6 @@
 package com;
 
 import com.core.*;
-import com.displayModel.TypeCellEnemy;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -66,7 +64,9 @@ public class SwingStartGameSea extends JPanel {
     public SetShipResult setShip(SetShipCommand command) {
         return  gameRules.setShip(command);
     }
-
+    public void unSetShip(UnSetShipCommand command) {
+        gameRules.unSetShip(command);
+    }
     public List<Point> getPoints() {
         return List.copyOf(points);
     }

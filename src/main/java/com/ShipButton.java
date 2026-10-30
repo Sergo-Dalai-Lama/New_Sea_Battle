@@ -32,22 +32,23 @@ public class ShipButton extends JButton {
         addMouseListener(new  MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e){//если нажали на кнопку, то что делать
-                sourcePanel = getParent();//запоминаем исходную панель
+                    sourcePanel = getParent();//запоминаем исходную панель
 
-                initialPosition = SwingUtilities.convertPoint(//перевели координаты в contentPane
-                        sourcePanel,
-                        getLocation(),
-                        contentPane);
+                    initialPosition = SwingUtilities.convertPoint(//перевели координаты в contentPane
+                            sourcePanel,
+                            getLocation(),
+                            contentPane);
 
-                offset = e.getPoint();//запомнили точку. где нажали на кнопку
-                sourcePanel.remove(ShipButton.this);//удалили кнопку с панели размещения
-                contentPane.add(ShipButton.this,0);//добавили кнопку на contentPane
-                setLocation(initialPosition);
-                sourcePanel.revalidate();
-                sourcePanel.repaint();
+                    offset = e.getPoint();//запомнили точку. где нажали на кнопку
+                    sourcePanel.remove(ShipButton.this);//удалили кнопку с панели размещения
+                    contentPane.add(ShipButton.this,0);//добавили кнопку на contentPane
+                    setLocation(initialPosition);
+                    sourcePanel.revalidate();
+                    sourcePanel.repaint();
 
-                contentPane.revalidate();
-                contentPane.repaint();
+                    contentPane.revalidate();
+                    contentPane.repaint();
+
             }
 
             @Override
@@ -66,6 +67,7 @@ public class ShipButton extends JButton {
                          Coordinate coordinate = new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
                          SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
                          SetShipResult result = targetPanel.setShip(command);
+
                          if (result.outcome()==SetShipOutcome.SET) {
                              contentPane.remove(ShipButton.this);
                              targetPanel.add(ShipButton.this,0);
@@ -115,8 +117,7 @@ public class ShipButton extends JButton {
                             SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
                             SetShipResult result = targetPanel.setShip(command);
                             targetPanel.paintByResult(result,orientation,ship);
-                            System.out.println(result);
-                            System.out.println(point);
+                            targetPanel.unSetShip(new UnSetShipCommand(coordinate));
                         }
                     }
                 }
@@ -144,16 +145,24 @@ public class ShipButton extends JButton {
     }
 
     private void drawDeck(Graphics2D g2d, Color color) {
-        int widthShip = getWidth();
-        int heightDeck = getHeight();
-        int widthDeck = widthShip/ship.getSize();
-        for (int i = 0; i <ship.getSize(); i++) {
-            g2d.setColor(color);
-            g2d.fillRect(i*widthDeck,0,widthDeck,heightDeck);
-            g2d.setColor(BORDER_CELL);
-            g2d.setStroke(new BasicStroke(1));
-            g2d.drawRect(i*widthDeck,0,widthDeck,heightDeck);
 
+        if (orientation == Orientation.HORIZONTAL) {
+            for (int i = 0; i <ship.getSize(); i++) {
+                g2d.setColor(color);
+                g2d.fillRect(i*SwingConfig.WIDTH_DECK,0,SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK);
+                g2d.setColor(BORDER_CELL);
+                g2d.setStroke(new BasicStroke(1));
+                g2d.drawRect(i*SwingConfig.WIDTH_DECK,0,SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK);
+
+            }
+        } else  {
+            for (int i = 0; i <ship.getSize(); i++) {
+                g2d.setColor(color);
+                g2d.fillRect(0,i*SwingConfig.HEIGHT_DECK,SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK);
+                g2d.setColor(BORDER_CELL);
+                g2d.setStroke(new BasicStroke(1));
+                g2d.drawRect(0,i*SwingConfig.HEIGHT_DECK,SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK);
+            }
         }
     }
 
@@ -174,6 +183,7 @@ public class ShipButton extends JButton {
         return null;
     }
     private void returnShip() {
+        orientation = Orientation.HORIZONTAL;
         Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
                 contentPane,
                 initialPosition,
