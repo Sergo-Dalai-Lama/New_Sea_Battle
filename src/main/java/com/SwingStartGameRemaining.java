@@ -36,14 +36,4 @@ public class SwingStartGameRemaining extends JPanel {
         }
     }
 
-    public void remove(Ship ship) {//вспомогательный метод для проверки работоспособности переноса кнопки с одного panel на другой
-        for (int i = 0; i<remainingShipModel.getMySeaRemainingSetShipModel().size();i++){
-            for (int j = 0; j < remainingShipModel.getMySeaRemainingSetShipModel().get(i).length; j++) {
-                if (remainingShipModel.getMySeaRemainingSetShipModel().get(i)[j].equals(ship)) {
-                    remainingShipModel.getMySeaRemainingSetShipModel().remove(i);
-                }
-            }
-        }
-    }
-
 }

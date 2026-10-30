@@ -1,6 +1,7 @@
 package com;
 
-import com.core.Ship;
+import com.core.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -13,13 +14,16 @@ public class ShipButton extends JButton {
     private final Container contentPane;
     private Container sourcePanel;//для сохранения информации об исходной панели
     private final Ship ship;
+    private Orientation orientation;
     private Point offset;
     private Point initialPosition;
-
-    public ShipButton(Ship ship,SwingStartGameFrame frame,SwingStartGameSea targetPanel) {
+    private Coordinate newCoordinate = null;
+    private  final int maxDistance = SwingConfig.WIDTH_DECK;
+    public ShipButton( Ship ship,SwingStartGameFrame frame,SwingStartGameSea targetPanel) {
         this.ship = ship;
         this.contentPane = frame.getContentPane();
         this.targetPanel = targetPanel;
+        orientation = Orientation.HORIZONTAL;
         setLayout(null);
         setBounds(0, 0, SwingConfig.WIDTH_DECK * ship.getSize(), SwingConfig.HEIGHT_DECK);
         setBorderPainted(false);
@@ -47,7 +51,7 @@ public class ShipButton extends JButton {
             }
 
             @Override
-            public void mouseReleased(MouseEvent e){//что делать если кнопку опустили
+            public void mouseReleased(MouseEvent e){//что делать если кнопку отпустили
                 Point position = getLocation();
                 //проверяем положение кнопки относительно contentPane
                 if (targetPanel.getBounds().contains(position)) { //проверяем опустили ли кнопку над targetPanel
@@ -57,23 +61,20 @@ public class ShipButton extends JButton {
                             targetPanel
                     );
 
-                     Point point = findNearestSnapPoint(targetPosition,SwingConfig.WIDTH_DECK);
+                     Point point = findNearestSnapPoint(targetPosition);
                      if (point != null) {
-                         contentPane.remove(ShipButton.this);
-                         targetPanel.add(ShipButton.this,0);
-                         setLocation(point);
-                     }
+                         Coordinate coordinate = new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
+                         SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
+                         SetShipResult result = targetPanel.setShip(command);
+                         if (result.outcome()==SetShipOutcome.SET) {
+                             contentPane.remove(ShipButton.this);
+                             targetPanel.add(ShipButton.this,0);
+                             setLocation(point);
+                         } else returnShip();
+                     } else returnShip();
 
-                } else {
-                    Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
-                         contentPane,
-                         initialPosition,
-                         sourcePanel
-                    );
-                    contentPane.remove(ShipButton.this);
-                    sourcePanel.add(ShipButton.this,0);
-                    setLocation(sourcePosition);
-                }
+                } else
+                   returnShip();
 
                 contentPane.revalidate();
                 contentPane.repaint();
@@ -98,10 +99,30 @@ public class ShipButton extends JButton {
                 int x = mousePosition.x - offset.x;
                 int y = mousePosition.y - offset.y;
                 setLocation(x, y);
+
+                if (targetPanel.getBounds().contains(getLocation())) { //проверяем опустили ли кнопку над targetPanel
+                    Point targetPosition = SwingUtilities.convertPoint(//переводим в систему координат targetPanel
+                            contentPane,
+                            getLocation(),
+                            targetPanel
+                    );
+                    Point point = findNearestSnapPoint(targetPosition);
+                    if (point != null) {
+                        Coordinate coordinate = new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
+                        if (newCoordinate==null||coordinate.x() != newCoordinate.x() || coordinate.y() != newCoordinate.y()) {
+                            targetPanel.generatePreCanSetResultTrue();
+                            newCoordinate = coordinate;
+                            SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
+                            SetShipResult result = targetPanel.setShip(command);
+                            targetPanel.paintByResult(result,orientation,ship);
+                            System.out.println(result);
+                            System.out.println(point);
+                        }
+                    }
+                }
             }
         });
     }
-
 
     public Ship getShip() {
         return ship;
@@ -136,7 +157,7 @@ public class ShipButton extends JButton {
         }
     }
 
-    private Point findNearestSnapPoint(Point point, int maxDistance) {
+    private Point findNearestSnapPoint(Point point) {
         Point nearestPoint = null;
         double minDistance = Double.MAX_VALUE;
         for (Point snapPoint: targetPanel.getPoints()){
@@ -151,5 +172,15 @@ public class ShipButton extends JButton {
         }
 
         return null;
+    }
+    private void returnShip() {
+        Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
+                contentPane,
+                initialPosition,
+                sourcePanel
+        );
+        contentPane.remove(ShipButton.this);
+        sourcePanel.add(ShipButton.this,0);
+        setLocation(sourcePosition);
     }
 }
