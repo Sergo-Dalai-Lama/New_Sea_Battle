@@ -91,7 +91,9 @@ public class SwingStartGameSea extends JPanel {
            }
             repaint();
     }
-
+public void unSetShip(UnSetShipCommand command) {
+        gameRules.unSetShip(command);
+}
     public void generatePreCanSetResultTrue() {
         for (int i = 0; i < GameConfig.ROWS; i++) {
             for (int j = 0; j < GameConfig.COLUMNS; j++) {

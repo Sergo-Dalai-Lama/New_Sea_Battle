@@ -31,7 +31,7 @@ public class ShipButton extends JButton {
         setContentAreaFilled(false);
         addMouseListener(new  MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e){//если нажали на кнопку, то что делать
+            public void mousePressed(MouseEvent e){//если зажали на кнопку, то что делать
 
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     rotate();
@@ -45,6 +45,7 @@ public class ShipButton extends JButton {
                     targetPanel.repaint();
                     return;
                 }
+
                     sourcePanel = getParent();//запоминаем исходную панель
 
                     initialPosition = SwingUtilities.convertPoint(//перевели координаты в contentPane
@@ -52,16 +53,36 @@ public class ShipButton extends JButton {
                             getLocation(),
                             contentPane);
 
-                    offset = e.getPoint();//запомнили точку. где нажали на кнопку
+                Point position = getLocation();
+                //проверяем положение кнопки относительно contentPane
+                if (targetPanel.getBounds().contains(position)) { //проверяем зажали ли кнопку над targetPanel
+                    Point targetPosition = SwingUtilities.convertPoint(//переводим в систему координат targetPanel
+                            contentPane,
+                            position,
+                            targetPanel
+                    );
+                        Coordinate coordinate = new Coordinate(targetPosition.x/SwingConfig.WIDTH_DECK, targetPosition.y/SwingConfig.HEIGHT_DECK);
+                        UnSetShipCommand command = new UnSetShipCommand(coordinate);
+                        targetPanel.unSetShip(command);
+                        targetPanel.generatePreCanSetResultTrue();
                     sourcePanel.remove(ShipButton.this);//удалили кнопку с панели размещения
                     contentPane.add(ShipButton.this,0);//добавили кнопку на contentPane
+                    setLocation(initialPosition);
+                    sourcePanel.revalidate();
+                    sourcePanel.repaint();
+                    contentPane.revalidate();
+                    contentPane.repaint();
+                } else {
+                    offset = e.getPoint();//запомнили точку. где нажали на кнопку
+                    sourcePanel.remove(ShipButton.this);//удалили кнопку с панели размещения
+                    contentPane.add(ShipButton.this, 0);//добавили кнопку на contentPane
                     setLocation(initialPosition);
                     sourcePanel.revalidate();
                     sourcePanel.repaint();
 
                     contentPane.revalidate();
                     contentPane.repaint();
-
+                }
             }
 
             @Override
@@ -116,7 +137,7 @@ public class ShipButton extends JButton {
                 int y = mousePosition.y - offset.y;
                 setLocation(x, y);
 
-                if (targetPanel.getBounds().contains(getLocation())) { //проверяем опустили ли кнопку над targetPanel
+                if (targetPanel.getBounds().contains(getLocation())) { //проверяем движется ли кнопка над targetPanel
                     Point targetPosition = SwingUtilities.convertPoint(//переводим в систему координат targetPanel
                             contentPane,
                             getLocation(),
