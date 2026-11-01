@@ -31,14 +31,13 @@ public class ShipButton extends JButton {
         setContentAreaFilled(false);
         addMouseListener(new  MouseAdapter() {
 
-            private void mousePressedUpdate(){
-
-            }
-
             @Override
             public void mousePressed(MouseEvent e){//если зажали на кнопку, то что делать
+                if (e.getButton() == MouseEvent.BUTTON3){
+                    rotate();
+                }
                     mousePressedStart();
-                    offset = e.getPoint();//запомнили точку. где нажали на кнопку
+                    offset = e.getPoint();//запомнили точку, где нажали на кнопку
                     sourcePanel.remove(ShipButton.this);//удалили кнопку с панели размещения
                     contentPane.add(ShipButton.this, 0);//добавили кнопку на contentPane
                     setLocation(initialPosition);
@@ -70,8 +69,7 @@ public class ShipButton extends JButton {
                          } else returnShip();
                      } else returnShip();
 
-                } else
-                   returnShip();
+                } else returnShip();
                 repaintRevalidate();
             }
         }
@@ -178,8 +176,11 @@ private void mouseDraggedStart(MouseEvent e){
     }
 
     private void returnShip() {
-        orientation = Orientation.HORIZONTAL;
-        setSize(SwingConfig.WIDTH_DECK*ship.getSize(), SwingConfig.HEIGHT_DECK);
+        if (contentPane!=targetPanel){
+            orientation = Orientation.HORIZONTAL;
+            setSize(SwingConfig.WIDTH_DECK*ship.getSize(), SwingConfig.HEIGHT_DECK);
+        }
+
         Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
                 contentPane,
                 initialPosition,
