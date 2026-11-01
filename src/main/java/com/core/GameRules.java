@@ -98,7 +98,7 @@ public class GameRules {
                 return new SetShipResult(
                         coordinate,
                         SetShipOutcome.SET_FINISHED,
-                        null
+                        ship
 
                 );
             }

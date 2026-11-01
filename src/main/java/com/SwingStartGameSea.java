@@ -74,7 +74,7 @@ public class SwingStartGameSea extends JPanel {
         if (result.deliveredShip() != null) {
             gameRules.unSetShip(new UnSetShipCommand(coordinate));
         }
-            if (result.outcome()!=SetShipOutcome.SET) {
+            if (!(result.outcome()==SetShipOutcome.SET||result.outcome()==SetShipOutcome.SET_FINISHED)) {
                if (orientation == Orientation.HORIZONTAL) {
                    for (int i = 0; i < ship.getSize(); i++) {
                        if (i+result.coordinate().x()<GameConfig.ROWS) {
