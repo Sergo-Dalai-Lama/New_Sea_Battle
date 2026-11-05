@@ -78,18 +78,28 @@ public class ShipButton extends JButton {
             @Override
             public void mouseDragged(MouseEvent e){//если перетаскиваем кнопку, то что делать
                 mouseDraggedStart(e);
-
                 mouseDraggedAboveSea();
+                System.out.println(getParent());
+                System.out.println(getLocation());
+
+                Container parent = getParent();
+                Point position = SwingUtilities.convertPoint(
+                       parent,
+                       getLocation(),
+                       contentPane
+                );
+                if (resolveMouseCursorPosition(position)!=MouseCursorPosition.SEA_PANEL){
+                    if (getLocation().x>getParent().getSize().width||getLocation().y>getParent().getSize().height){
+                        returnShip();
+                    }
+                }
             }
         });
     }
     private void mouseDraggedAboveSea(){
-        if (targetPanel.getBounds().contains(getLocation())) { //проверяем движется ли кнопка над targetPanel
-            Point targetPosition = SwingUtilities.convertPoint(//переводим в систему координат targetPanel
-                    contentPane,
-                    getLocation(),
-                    targetPanel
-            );
+        Point targetPosition;
+        if (resolveMouseCursorPosition(getLocation())==MouseCursorPosition.SEA_PANEL){
+            targetPosition = repositionMousePosition(MouseCursorPosition.SEA_PANEL,contentPane);
             Point point = findNearestSnapPoint(targetPosition);
         if (point != null) {
             Coordinate coordinate = new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
@@ -219,5 +229,30 @@ private void mouseDraggedStart(MouseEvent e){
                 getLocation(),
                 contentPane
         );//перевели координаты в contentPane
+    }
+    private MouseCursorPosition resolveMouseCursorPosition(Point initialPosition) {
+        if (targetPanel.getBounds().contains(initialPosition)) {
+            return MouseCursorPosition.SEA_PANEL;
+        }
+        return MouseCursorPosition.CONTENT_PANE;
+    }
+
+    private Point repositionMousePosition(MouseCursorPosition mouseCursorPosition, Container currentContainer) {
+       Point newInitialPosition;
+        if (mouseCursorPosition==MouseCursorPosition.SEA_PANEL) {
+            newInitialPosition = SwingUtilities.convertPoint(
+                    currentContainer,
+                    getLocation(),
+                    targetPanel
+            );
+        } else {
+            newInitialPosition = SwingUtilities.convertPoint(
+                    currentContainer,
+                    getLocation(),
+                    contentPane
+            );
+        }
+        initialPosition = getLocation();
+        return newInitialPosition;
     }
 }
