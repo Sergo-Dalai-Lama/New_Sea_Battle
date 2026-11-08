@@ -79,8 +79,6 @@ public class ShipButton extends JButton {
             public void mouseDragged(MouseEvent e){//если перетаскиваем кнопку, то что делать
                 mouseDraggedStart(e);
                 mouseDraggedAboveSea();
-                System.out.println(getParent());
-                System.out.println(getLocation());
 
                 Container parent = getParent();
                 Point position = SwingUtilities.convertPoint(
