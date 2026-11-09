@@ -59,8 +59,7 @@ public class ShipButton extends JButton {
                      if (point != null) {
                          targetPanel.generatePreCanSetResultTrue();
                          Coordinate coordinate = new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
-                         SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
-                         SetShipResult result = targetPanel.setShip(command);
+                         SetShipResult result = null;
 
                          if (result.outcome()==SetShipOutcome.SET||result.outcome()==SetShipOutcome.SET_FINISHED) {
                              contentPane.remove(ShipButton.this);
@@ -77,6 +76,7 @@ public class ShipButton extends JButton {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e){//если перетаскиваем кнопку, то что делать
+
                 mouseDraggedStart(e);
                 mouseDraggedAboveSea();
 

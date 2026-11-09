@@ -1,7 +1,6 @@
 package com;
 
 import com.core.*;
-import com.displayModel.RemainingShipModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +18,9 @@ public class NewShipButton extends JButton {
     private final Container contentPane;
     private Point initialLocation;
     private Point offset;
+    private final int maxDistance = SwingConfig.WIDTH_DECK;
+    private Coordinate newCoordinate = null;
+    private Orientation newOrientation = null;
     public NewShipButton(Ship ship, SwingStartGameFrame frame, SwingStartGameSea sea) {
         this.ship = ship;
         this.sea = sea;
@@ -51,11 +53,18 @@ public class NewShipButton extends JButton {
             }
 
             @Override
-            public void mouseReleased(MouseEvent e){//вызывается когда мышь отпустили
-                returnShip();
+            public void mouseReleased(MouseEvent e) {//вызывается когда мышь отпустили
+
+                SetShipOutcome setShipOutcome = sea.setShipResult(newCoordinate, ship, orientation);
+                if (setShipOutcome == SetShipOutcome.SET){
+                    setShip();
+                } else {
+                    setError(setShipOutcome);
+                }
             }
 
         });
+
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e){//вызывается когда курсор перемещается с зажатой клавишей на компоненте
@@ -65,7 +74,6 @@ public class NewShipButton extends JButton {
                         e.getPoint(),
                         contentPane
                 );
-
                     //запомнили куда сместилась мышь на экране
                     int thisX = position.x;
                     int thisY = position.y;
@@ -82,6 +90,20 @@ public class NewShipButton extends JButton {
                     nextX = Math.clamp(nextX, minX, maxX);
                     nextY = Math.clamp(nextY, minY, maxY);
                     setLocation(nextX, nextY);//применяем новые координаты курсора
+                //реализация превью установки
+                if (isShipOverSea(getLocation())) {
+                    Point nearestPoint = findNearestSnapPoint(getLocation());
+                    if (nearestPoint != null) {
+                        Coordinate coordinate = new Coordinate(nearestPoint.x/SwingConfig.WIDTH_DECK, nearestPoint.y/SwingConfig.HEIGHT_DECK);
+                        if (!coordinate.equals(newCoordinate)||
+                            !orientation.equals(newOrientation)) {
+                            sea.generatePreCanSetResultTrue();
+                            newCoordinate = coordinate;
+                            newOrientation = orientation;
+                            sea.paintByResult(coordinate,orientation,ship);
+                        }
+                    }
+                }
             }
         });
 
@@ -132,36 +154,67 @@ public class NewShipButton extends JButton {
         shipListContainer.revalidate();
         shipListContainer.repaint();
     }
-    private void returnShip(){//метод возвращения корабля в список
+    private void returnShipIsList(){//метод возвращения корабля в список
         orientation = Orientation.HORIZONTAL;
         setSize(SwingConfig.WIDTH_DECK*ship.getSize(),SwingConfig.HEIGHT_DECK);
-        if (isShipOverSea(getLocation())){//здесь должны переводиться координаты в Sea
-            //пока не работает, потому что не определен результат постановки на поле.
-            Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
-                    contentPane,
-                    initialLocation,
-                    sea
-            );
-            sea.remove(NewShipButton.this);
-            sourcePanel.add(NewShipButton.this, 0);
-            setLocation(sourcePosition);
-        } else {//здесь должны переводиться координаты в source
-            Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
-                    contentPane,
-                    initialLocation,
-                    sourcePanel
-            );
-            contentPane.remove(NewShipButton.this);
-            sourcePanel.add(NewShipButton.this, 0);
-            setLocation(sourcePosition);
-        }
+        Point sourcePosition = SwingUtilities.convertPoint(//перевести координаты в sourcePanel
+                contentPane,
+                initialLocation,
+                sourcePanel
+        );
+        contentPane.remove(NewShipButton.this);
+        sourcePanel.add(NewShipButton.this, 0);
+        setLocation(sourcePosition);
         repaintRevalidate();
+    }
 
+    private void returnShipIsSea(){
 
     }
+
     private boolean isShipOverSea(Point posInContentPane){//метод проверки нахождения над Sea
         return sea.getBounds().contains(posInContentPane);
     }
+
+    private Point findNearestSnapPoint(Point point) {
+
+        if (getParent()!=sea){
+            point = SwingUtilities.convertPoint(
+                    getParent(),
+                    point,
+                    sea
+            );
+        }
+        Point nearestPoint = null;
+        double minDistance = Double.MAX_VALUE;
+        for (Point snapPoint: sea.getPoints()){
+            double distance = point.distance(snapPoint);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestPoint = snapPoint;
+            }
+        }
+        if (nearestPoint!=null&&minDistance <= maxDistance) {
+            return nearestPoint;
+        }
+
+        return null;
+    }
+
+    private void setShip() {
+        Point nearestPoint = findNearestSnapPoint(getLocation());
+        if (nearestPoint!=null) {
+            contentPane.remove(NewShipButton.this);
+            sea.add(NewShipButton.this,0);
+            setLocation(nearestPoint);
+        }
+    }
+
+    private void setError(SetShipOutcome setShipOutcome) {
+        returnShipIsList();
+        new ShipPlacementFailureMessage(setShipOutcome);
+    }
+
 }
 /*
 1. Ограничить движение мыши ВЫПОЛНЕНО

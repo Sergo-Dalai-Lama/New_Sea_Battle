@@ -61,13 +61,16 @@ public class SwingStartGameSea extends JPanel {
         }
     }
 
-    public SetShipResult setShip(SetShipCommand command) {
-        return  gameRules.setShip(command);
+    public SetShipOutcome setShipResult(Coordinate coordinate,Ship ship,Orientation orientation) {
+        SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
+        SetShipOutcome setShipOutcome = gameRules.setShip(command).outcome();
+        return setShipOutcome;
     }
 
     public List<Point> getPoints() {
         return List.copyOf(points);
     }
+
     public void paintByResult(Coordinate coordinate,Orientation orientation,Ship ship) {
         SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
         SetShipResult result = gameRules.setShip(command);
@@ -94,7 +97,8 @@ public class SwingStartGameSea extends JPanel {
 public void unSetShip(UnSetShipCommand command) {
         gameRules.unSetShip(command);
 }
-    public void generatePreCanSetResultTrue() {
+
+public void generatePreCanSetResultTrue() {
         for (int i = 0; i < GameConfig.ROWS; i++) {
             for (int j = 0; j < GameConfig.COLUMNS; j++) {
                 preCanSetResult[i][j] = true;
