@@ -26,9 +26,9 @@ private final RemainingShipModel remainingShipModel = new RemainingShipModel();
         contentPane.setBackground(BACKGROUND);//если просто задать цвет фрейма, то ничего не поменяется, так как contentPane перекрывает его
         pack();//установить подбор размера окна только после настройки всех параметров основания
         //можно сказать, что параметры основания принимаются только после pack()
-        SwingStartGameSea swingStartGameSea = new SwingStartGameSea(listShip, gameRules);
         int y = (getContentPane().getHeight() - SwingConfig.HEIGHT_SEA) / 2;//рассчитывать другие координаты относительно основания можно только после установки
         //размеров основания
+        SwingStartGameSea swingStartGameSea = new SwingStartGameSea(listShip, gameRules);
         swingStartGameSea.setLocation(0, y);//работает если указать setBounds непосредственно в объекте
         contentPane.add(swingStartGameSea);//добавить панель на основание только после инициализации и настройки основания
         SwingStartGameRemaining swingStartGameRemaining = new SwingStartGameRemaining(this,swingStartGameSea);

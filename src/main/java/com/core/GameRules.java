@@ -57,7 +57,7 @@ public class GameRules {
         Coordinate coordinate = setShipCommand.coordinate();
         Orientation orientation = setShipCommand.orientation();
 
-        if (ship==null) {
+        if ((ship == null) || (coordinate == null) || (orientation == null)) {
             return new SetShipResult(
                     coordinate,
                     SetShipOutcome.INVALID_DATA,
@@ -321,7 +321,8 @@ public class GameRules {
                 coordinate.x()+ship.getSize()>GameConfig.ROWS||
                 coordinate.y()<0||
                 coordinate.y()>=GameConfig.COLUMNS||
-                coordinate.x()>=GameConfig.ROWS;
+                coordinate.x()>=GameConfig.ROWS
+                ;
     }
 
     private boolean shipCollisionVertical(Coordinate coordinate, Ship ship) {

@@ -9,7 +9,7 @@ public class RemainingShipModel {//класс для создания модел
     //по сути аналог My/EnemySeaDisplayModel,
     //поэтому дублирует то, что есть в ListShip, но необходим для разделения ViewModel от GameCore/Model
     private final List<Ship> mySeaRemainingSetShipFromList;
-    private final List<Ship[]> mySeaRemainingSetShipModel =  new ArrayList<Ship[]>();
+    private final List<Ship[]> mySeaRemainingSetShipModel = new ArrayList<>();
     public RemainingShipModel() {
         this.mySeaRemainingSetShipFromList = List.of(Ship.values());
         generateShipsListDisplay();
@@ -23,7 +23,7 @@ public class RemainingShipModel {//класс для создания модел
 
         int k = 4;//надо будет убирать магическое число и заменить на глобальное "количество типов кораблей"
         for (int i = 0; i < k; i++) {//цикл по количеству кораблей в зависимости от типа (всего 4 типа)
-            Ship[] listOfShipsOfType = new Ship[i+1];//создали список длиной в кол. кор. в зависимости от типа
+            Ship[] listOfShipsOfType = new Ship[i+1];//Создали список длиной в кол. кор. В зависимости от типа
             int l = i*(i+1)/2;
             for (int j = l; j < l+i+1; j++) {
                 Ship currentShip = mySeaRemainingSetShipFromList.get(j);

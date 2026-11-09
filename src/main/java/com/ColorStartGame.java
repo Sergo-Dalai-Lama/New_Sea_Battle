@@ -12,6 +12,6 @@ public final class ColorStartGame {
     public final static Color SHIP_DECK_OF_PRESSED = new Color(202, 255, 153,100);
     public final static Color SHIP_DECK_OF_NON_CURSOR = new Color(202, 255, 153,255);
     public final static Color NON_SET_SHIP = new Color(250, 135, 135, 255);
-    public final static Color SET_SHIP = new Color(202, 255, 153, 128);
+    public final static Color SET_SHIP = new Color(147, 248, 219, 98);
 
 }
