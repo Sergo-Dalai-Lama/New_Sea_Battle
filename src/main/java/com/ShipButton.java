@@ -6,11 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import static com.ColorStartGame.*;
 
 public class ShipButton extends JButton {
-    private final SwingStartGameSea sea;
+    private final SwingStartGameFrame frame;
     private Container shipListContainer;
     private Container sourcePanel=null;
     private final Ship ship;
@@ -22,10 +21,10 @@ public class ShipButton extends JButton {
     private Coordinate newCoordinate = null;
     private Orientation newOrientation = null;
     private ShipSetting shipSetting;
-    public ShipButton(Ship ship, SwingStartGameFrame frame, SwingStartGameSea sea) {
+    public ShipButton(Ship ship, SwingStartGameFrame frame) {
         this.ship = ship;
-        this.sea = sea;
         this.contentPane = frame.getContentPane();
+        this.frame = frame;
         setLayout(null);
         setBounds(0, 0, SwingConfig.WIDTH_DECK*ship.getSize(), SwingConfig.HEIGHT_DECK);
         setBorderPainted(false);
@@ -40,7 +39,7 @@ public class ShipButton extends JButton {
                 rotateShip();
             }
             sourcePanel=getParent();
-            if (sourcePanel!=sea){//если объект зажали не на поле боя, то зажали на панели размещения
+            if (sourcePanel!=frame.getSea()){//если объект зажали не на поле боя, то зажали на панели размещения
                 shipListContainer=getParent();
                 shipSetting = ShipSetting.SET;
             } else {
@@ -68,8 +67,9 @@ public class ShipButton extends JButton {
 
             @Override
             public void mouseReleased(MouseEvent e) {//вызывается когда мышь отпустили
-
-                SetShipOutcome setShipOutcome = sea.setShipResult(newCoordinate, ship, orientation);
+                SetShipResult result = frame.getSea().setShipResult(newCoordinate, ship, orientation);
+                frame.getRemaining().applySet(result);
+                SetShipOutcome setShipOutcome = result.outcome();
                 if (setShipOutcome == SetShipOutcome.SET||setShipOutcome==SetShipOutcome.SET_FINISHED){
                     setShip();
                 } else {
@@ -124,7 +124,7 @@ public class ShipButton extends JButton {
                 Coordinate coordinate = new Coordinate(nearestPoint.x/SwingConfig.WIDTH_DECK, nearestPoint.y/SwingConfig.HEIGHT_DECK);
                 if (!coordinate.equals(newCoordinate)||
                     !orientation.equals(newOrientation)) {
-                    applyPrePlacementPaint(coordinate, sea, ship);
+                    applyPrePlacementPaint(coordinate, frame.getSea(), ship);
                 }
             }
         } else  {
@@ -140,12 +140,12 @@ public class ShipButton extends JButton {
     }
 
     private void applyDeleteShip(Coordinate coordinate) {
-        sea.generatePreCanSetResultTrue();
-        sea.unSetShip(coordinate);
+        frame.getSea().generatePreCanSetResultTrue();
+        frame.getSea().unSetShip(coordinate);
     }
 
     private void resetPaint(){
-        sea.generatePreCanSetResultTrue();
+        frame.getSea().generatePreCanSetResultTrue();
         newCoordinate = null;
         newOrientation = null;
     }
@@ -190,8 +190,8 @@ public class ShipButton extends JButton {
         contentPane.revalidate();
         contentPane.repaint();
 
-        sea.revalidate();
-        sea.repaint();
+        frame.getSea().revalidate();
+        frame.getSea().repaint();
 
         shipListContainer.revalidate();
         shipListContainer.repaint();
@@ -204,7 +204,7 @@ public class ShipButton extends JButton {
                 initialLocation,
                 shipListContainer
         );
-        sea.generatePreCanSetResultTrue();
+        frame.getSea().generatePreCanSetResultTrue();
         contentPane.remove(ShipButton.this);
         shipListContainer.add(ShipButton.this, 0);
         setLocation(sourcePosition);
@@ -215,32 +215,32 @@ public class ShipButton extends JButton {
             Point sourcePosition = SwingUtilities.convertPoint(
                     contentPane,
                     initialLocation,
-                    sea
+                    frame.getSea()
             );
-            sea.generatePreCanSetResultTrue();
+        frame.getSea().generatePreCanSetResultTrue();
             contentPane.remove(ShipButton.this);
-            sea.add(ShipButton.this,0);
+        frame.getSea().add(ShipButton.this,0);
             setLocation(sourcePosition);
             repaintRevalidate();
     }
 
     private boolean isShipOverSea(Point posInContentPane){//метод проверки нахождения над Sea
 
-        return sea.getBounds().contains(posInContentPane);
+        return frame.getSea().getBounds().contains(posInContentPane);
     }
 
     private Point findNearestSnapPoint(Point point) {
 
-        if (getParent()!=sea){
+        if (getParent()!=frame.getSea()){
             point = SwingUtilities.convertPoint(
                     getParent(),
                     point,
-                    sea
+                    frame.getSea()
             );
         }
         Point nearestPoint = null;
         double minDistance = Double.MAX_VALUE;
-        for (Point snapPoint: sea.getPoints()){
+        for (Point snapPoint: frame.getSea().getPoints()){
             double distance = point.distance(snapPoint);
             if (distance < minDistance) {
                 minDistance = distance;
@@ -258,7 +258,7 @@ public class ShipButton extends JButton {
         Point nearestPoint = findNearestSnapPoint(getLocation());
         if (nearestPoint!=null) {
             contentPane.remove(ShipButton.this);
-            sea.add(ShipButton.this,0);
+            frame.getSea().add(ShipButton.this,0);
             setLocation(nearestPoint);
         }
     }
@@ -286,14 +286,3 @@ public class ShipButton extends JButton {
     }
 
 }
-/*
-1. Ограничить движение мыши ВЫПОЛНЕНО
-2. Настроить опознавание находимся ли над панелью Sea ВЫПОЛНЕНО
-3. Настроить захват корабля на поле установки в вертикальном и горизонтальном положении
-4. Корректно устанавливать корабль на поле
-5. Убирать корабль с поля, если взяли его с поля
-6. Очищать поле от корабля, когда взяли его с поля
-7. Возвращать корабль в список, если постановка после снятия некорректная
-8. Возвращать корабль, если отпустили мышь не над Sea ВЫПОЛНЕНО
-
- */

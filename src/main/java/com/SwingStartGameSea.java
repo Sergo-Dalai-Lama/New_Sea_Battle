@@ -8,12 +8,10 @@ import java.util.List;
 import static com.ColorStartGame.*;
 
 public class SwingStartGameSea extends JPanel {
-    private final ListShip listShip;
     private final GameRules gameRules;
     private final List<Point> points = new ArrayList<Point>();
     private final PreviewSet[][] preCanSetResult = new PreviewSet[GameConfig.ROWS][GameConfig.COLUMNS];
-    public SwingStartGameSea(ListShip listShip, GameRules gameRules) {
-        this.listShip = listShip;
+    public SwingStartGameSea(GameRules gameRules) {
         this.gameRules = gameRules;
         generatePreCanSetResultTrue();
         setLayout(null);
@@ -69,17 +67,14 @@ public class SwingStartGameSea extends JPanel {
         }
     }
 
-    public SetShipOutcome setShipResult(Coordinate coordinate,Ship ship,Orientation orientation) {
+    public SetShipResult setShipResult(Coordinate coordinate,Ship ship,Orientation orientation) {
         SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
-        SetShipOutcome setShipOutcome = gameRules.setShip(command).outcome();
-        return setShipOutcome;
+        return gameRules.setShip(command);
     }
 
-    public UnSetShipOutcome unSetShip(Coordinate coordinate) {
-       UnSetShipCommand command = new UnSetShipCommand(coordinate);
-       UnSetShipOutcome unSetShipOutcome = gameRules.unSetShip(command).unSetShipOutcome();
-
-       return unSetShipOutcome;
+    public UnSetShipResult unSetShip(Coordinate coordinate) {
+        UnSetShipCommand command = new UnSetShipCommand(coordinate);
+        return gameRules.unSetShip(command);
     }
 
     public List<Point> getPoints() {

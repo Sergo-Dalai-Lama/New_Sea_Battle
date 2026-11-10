@@ -12,12 +12,12 @@ import static com.ColorStartGame.BACKGROUND;
 //запомнить порядок настройки окна
 public class SwingStartGameFrame extends JFrame {
 private final GameRules  gameRules;
-private final ListShip listShip;
-private final RemainingShipModel remainingShipModel = new RemainingShipModel();
+public final ListShip listShip;
+private final SwingStartGameRemaining remaining;
+private final SwingStartGameSea sea;
     public SwingStartGameFrame() {
         listShip = new ListShip();
         gameRules = new GameRules(listShip);
-        MySeaDisplayModel mySeaDisplayModel = new MySeaDisplayModel(listShip);
         setTitle("New Sea Battle");//назначить имя окна
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//назначить по умолчанию закрытие окна
         Container contentPane = getContentPane();//назначить базовое основание для расположения объектов
@@ -28,16 +28,24 @@ private final RemainingShipModel remainingShipModel = new RemainingShipModel();
         //можно сказать, что параметры основания принимаются только после pack()
         int y = (getContentPane().getHeight() - SwingConfig.HEIGHT_SEA) / 2;//рассчитывать другие координаты относительно основания можно только после установки
         //размеров основания
-        SwingStartGameSea swingStartGameSea = new SwingStartGameSea(listShip, gameRules);
-        swingStartGameSea.setLocation(0, y);//работает если указать setBounds непосредственно в объекте
-        contentPane.add(swingStartGameSea);//добавить панель на основание только после инициализации и настройки основания
-        SwingStartGameRemaining swingStartGameRemaining = new SwingStartGameRemaining(this,swingStartGameSea);
+        sea = new SwingStartGameSea(gameRules);
+        sea.setLocation(0, y);//работает если указать setBounds непосредственно в объекте
+        contentPane.add(sea);//добавить панель на основание только после инициализации и настройки основания
+        remaining = new SwingStartGameRemaining(this);
         int x = getContentPane().getWidth() - SwingConfig.WIDTH_SEA + SwingConfig.WIDTH_DECK;
-        swingStartGameRemaining.setLocation(x, y);
-        contentPane.add(swingStartGameRemaining);
+        remaining.setLocation(x, y);
+        contentPane.add(remaining);
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    public SwingStartGameSea getSea() {
+        return sea;
+    }
+
+    public SwingStartGameRemaining getRemaining() {
+        return remaining;
     }
 
 }

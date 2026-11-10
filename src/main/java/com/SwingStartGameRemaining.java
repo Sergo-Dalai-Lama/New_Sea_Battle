@@ -1,15 +1,15 @@
 package com;
 
+import com.core.SetShipResult;
+import com.core.UnSetShipResult;
 import com.displayModel.RemainingShipModel;
 import javax.swing.*;
 
 public class SwingStartGameRemaining extends JPanel {
-    private RemainingShipModel remainingShipModel = new RemainingShipModel();
-    private SwingStartGameFrame frame;
-    private SwingStartGameSea gameSea;
-    public SwingStartGameRemaining(SwingStartGameFrame frame,SwingStartGameSea gameSea) {
+    private final RemainingShipModel remainingShipModel = new RemainingShipModel();
+    private final SwingStartGameFrame frame;
+    public SwingStartGameRemaining(SwingStartGameFrame frame) {
         this.frame = frame;
-        this.gameSea = gameSea;
         setLayout(null);
         setOpaque(false);
         setBounds(0,
@@ -24,7 +24,7 @@ public class SwingStartGameRemaining extends JPanel {
             int k = 0;
             for (int j = 0; j < remainingShipModel.getMySeaRemainingSetShipModel().get(i).length; j++){//цикл по кораблям типа
                    if (remainingShipModel.getMySeaRemainingSetShipModel().get(i)[j]!=null){
-                        ShipButton shipButton = new ShipButton(remainingShipModel.getMySeaRemainingSetShipModel().get(i)[j],frame,gameSea);//создали кнопку-корабль
+                        ShipButton shipButton = new ShipButton(remainingShipModel.getMySeaRemainingSetShipModel().get(i)[j],frame);//создали кнопку-корабль
                         this.add(shipButton,0);
                         shipButton.setLocation((j*remainingShipModel.getMySeaRemainingSetShipModel().get(i)[j].getSize()+k)*SwingConfig.WIDTH_DECK,
                                 i*2*SwingConfig.HEIGHT_DECK);//указали ее координату
@@ -34,5 +34,12 @@ public class SwingStartGameRemaining extends JPanel {
         }
     }
 
+    public void applySet(SetShipResult result){
+        remainingShipModel.applySetShipResult(result);
+    }
+
+    public void applyUnset(UnSetShipResult result){
+        remainingShipModel.applyUnSetShipResult(result);
+    }
 
 }
