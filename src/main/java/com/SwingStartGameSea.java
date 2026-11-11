@@ -67,16 +67,6 @@ public class SwingStartGameSea extends JPanel {
         }
     }
 
-    public SetShipResult setShipResult(Coordinate coordinate,Ship ship,Orientation orientation) {
-        SetShipCommand command = new SetShipCommand(coordinate,ship,orientation);
-        return gameRules.setShip(command);
-    }
-
-    public UnSetShipResult unSetShip(Coordinate coordinate) {
-        UnSetShipCommand command = new UnSetShipCommand(coordinate);
-        return gameRules.unSetShip(command);
-    }
-
     public List<Point> getPoints() {
         return List.copyOf(points);
     }
@@ -102,7 +92,30 @@ public class SwingStartGameSea extends JPanel {
             }
             repaint();
     }
+public void newPaintByResult(Coordinate coordinate,Orientation orientation,ShipButton shipButton, SetShipResult result) {
 
+        if (!(result.outcome()==SetShipOutcome.SET||result.outcome()==SetShipOutcome.SET_FINISHED)) {
+        if (orientation == Orientation.HORIZONTAL) {
+            setPreCanSetResultHorizontal(result,coordinate,shipButton,PreviewSet.NON_SET);
+        } else {
+            setPreCanSetResultVertical(result, coordinate, shipButton, PreviewSet.NON_SET);
+        }
+    } else {
+        if (orientation == Orientation.HORIZONTAL) {
+            setPreCanSetResultHorizontal(result, coordinate, shipButton, PreviewSet.SET);
+        } else {
+            setPreCanSetResultVertical(result, coordinate, shipButton, PreviewSet.SET);
+        }
+    }
+    repaint();
+}
+public void unSetShip(Coordinate coordinate) {
+
+}
+
+public void setShip(SetShipCommand command) {
+
+}
 public void generatePreCanSetResultTrue() {
         for (int i = 0; i < GameConfig.ROWS; i++) {
             for (int j = 0; j < GameConfig.COLUMNS; j++) {
@@ -120,6 +133,20 @@ public void generatePreCanSetResultTrue() {
     }
     private void setPreCanSetResultVertical(SetShipResult result, Coordinate coordinate, Ship ship,PreviewSet previewSet) {
         for (int i = 0; i < ship.getSize(); i++) {
+            if (i+result.coordinate().y()<GameConfig.COLUMNS) {
+                preCanSetResult[result.coordinate().x()][i+result.coordinate().y()] = previewSet;
+            }
+        }
+    }
+    private void setPreCanSetResultHorizontal(SetShipResult result, Coordinate coordinate, ShipButton shipButton, PreviewSet previewSet) {
+        for (int i = 0; i < shipButton.getShipSize(); i++) {
+            if (i+result.coordinate().x()<GameConfig.ROWS) {
+                preCanSetResult[i+result.coordinate().x()][result.coordinate().y()] = previewSet;
+            }
+        }
+    }
+    private void setPreCanSetResultVertical(SetShipResult result, Coordinate coordinate, ShipButton shipButton,PreviewSet previewSet) {
+        for (int i = 0; i < shipButton.getShipSize(); i++) {
             if (i+result.coordinate().y()<GameConfig.COLUMNS) {
                 preCanSetResult[result.coordinate().x()][i+result.coordinate().y()] = previewSet;
             }

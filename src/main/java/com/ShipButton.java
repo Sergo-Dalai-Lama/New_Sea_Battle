@@ -309,4 +309,8 @@ public class ShipButton extends JButton {
     public int getShipSize(){
         return ship.getSize();
     }
+
+    public  Ship getShip(){
+        return ship;
+    }
 }

@@ -47,9 +47,18 @@ public class PlacementShipButton implements ShipButton.MouseShipListener {
                 if (!coordinate.equals(newCoordinate)||
                 !shipButton.getOrientation().equals(newOrientation)){
                     //дать команду на попытку установить в remaining, sea, contentPane
-                    contentPane.remove(shipButton);
-                    sea.add(shipButton,0);
-                    shipButton.setLocation(nearestPoint);
+                    SetShipCommand command = new SetShipCommand(coordinate,shipButton.getShip(),shipButton.getOrientation());//создали команду
+                    SetShipResult result = gameRules.setShip(command);//отправили команду в ядро
+                    if (result.outcome() == SetShipOutcome.SET||result.outcome()==SetShipOutcome.SET_FINISHED) {
+
+                        remaining.applySet(result);
+                        contentPane.remove(shipButton);
+                        sea.add(shipButton, 0);
+                        shipButton.setLocation(nearestPoint);
+                    } else {
+                        returnShipIsList(shipButton);
+                        new ShipPlacementFailureMessage(result.outcome());
+                    }
                 }
             }
         } else {
@@ -104,6 +113,8 @@ public class PlacementShipButton implements ShipButton.MouseShipListener {
         contentPane.remove(shipButton);
         remaining.add(shipButton, 0);
         shipButton.setLocation(sourcePosition);
+        sea.generatePreCanSetResultTrue();
         shipButton.repaintRevalidate();
     }
+
 }
