@@ -92,8 +92,12 @@ public class SwingStartGameSea extends JPanel {
             }
             repaint();
     }
-public void newPaintByResult(Coordinate coordinate,Orientation orientation,ShipButton shipButton, SetShipResult result) {
-
+public void newPaintByResult(Coordinate coordinate,Orientation orientation,ShipButton shipButton) {
+    SetShipCommand command = new SetShipCommand(coordinate,shipButton.getShip(),orientation);
+    SetShipResult result = gameRules.setShip(command);
+    if (result.deliveredShip() != null) {
+        gameRules.unSetShip(new UnSetShipCommand(coordinate));
+    }
         if (!(result.outcome()==SetShipOutcome.SET||result.outcome()==SetShipOutcome.SET_FINISHED)) {
         if (orientation == Orientation.HORIZONTAL) {
             setPreCanSetResultHorizontal(result,coordinate,shipButton,PreviewSet.NON_SET);

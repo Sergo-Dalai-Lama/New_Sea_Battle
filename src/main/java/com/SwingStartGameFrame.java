@@ -31,7 +31,7 @@ private final SwingStartGameSea sea;
         sea = new SwingStartGameSea(gameRules);
         sea.setLocation(0, y);//работает если указать setBounds непосредственно в объекте
         contentPane.add(sea);//добавить панель на основание только после инициализации и настройки основания
-        remaining = new SwingStartGameRemaining(this);
+        remaining = new SwingStartGameRemaining();
         int x = getContentPane().getWidth() - SwingConfig.WIDTH_SEA + SwingConfig.WIDTH_DECK;
         remaining.setLocation(x, y);
         contentPane.add(remaining);

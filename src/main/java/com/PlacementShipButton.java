@@ -17,21 +17,45 @@ public class PlacementShipButton implements ShipButton.MouseShipListener {
     private final int maxDistance = SwingConfig.WIDTH_DECK;
     private Point initialPosition;
     private Point offset;
+    private Coordinate coordinateForReposition = null;
+    private ShipSetting shipSetting;
     public PlacementShipButton(SwingStartGameSea sea, SwingStartGameRemaining remaining, Container contentPane, GameRules gameRules) {
         this.sea = sea;
         this.gameRules = gameRules;
         this.contentPane = contentPane;
         this.remaining = remaining;
-
     }
     @Override
     public void onPressed(ShipButton shipButton, MouseEvent e){
-        initialPosition = SwingUtilities.convertPoint(//перевели из координат панели, на которой зажали
-                // и перевели в координаты contentPane
-                remaining,
-                shipButton.getLocation(),
-                contentPane
-        );
+
+        if (isPressedOverSea(shipButton.getParent())) {
+            shipSetting=ShipSetting.REPOSITION;
+            initialPosition = SwingUtilities.convertPoint(
+                    remaining,
+                    shipButton.getLocation(),
+                    contentPane
+            );
+            remaining.remove(shipButton);
+            contentPane.add(shipButton, 0);
+        } else {
+            shipSetting=ShipSetting.SET;
+            initialPosition = SwingUtilities.convertPoint(
+                    sea,
+                    shipButton.getLocation(),
+                    contentPane
+            );
+            sea.remove(shipButton);
+            contentPane.add(shipButton, 0);
+            Point nearestPoint = findNearestSnapPoint(shipButton,initialPosition);
+            if (nearestPoint!=null) {
+                coordinateForReposition = positionToCoordinate(nearestPoint);
+                appleDeleteShip(coordinateForReposition);
+            }
+        }
+        offset = e.getPoint();
+        shipButton.setLocation(initialPosition);
+        repaintRevalidate();
+
     }
     @Override
     public void onReleased(ShipButton shipButton, MouseEvent e){
@@ -41,36 +65,61 @@ public class PlacementShipButton implements ShipButton.MouseShipListener {
                     shipButton.getLocation(),
                     sea
             );
-            Point nearestPoint = findNearestSnapPoint(position);//вычислили ближайшую точку привязки
+            Point nearestPoint = findNearestSnapPoint(shipButton,position);//вычислили ближайшую точку привязки
             if (nearestPoint != null){
                 Coordinate coordinate = positionToCoordinate(nearestPoint);//перевели точку привязки в координату
-                if (!coordinate.equals(newCoordinate)||
-                !shipButton.getOrientation().equals(newOrientation)){
-                    //дать команду на попытку установить в remaining, sea, contentPane
-                    SetShipCommand command = new SetShipCommand(coordinate,shipButton.getShip(),shipButton.getOrientation());//создали команду
-                    SetShipResult result = gameRules.setShip(command);//отправили команду в ядро
-                    if (result.outcome() == SetShipOutcome.SET||result.outcome()==SetShipOutcome.SET_FINISHED) {
 
+                    //дать команду на попытку установить в remaining, sea, contentPane
+                    SetShipResult result;
+                    switch (shipSetting) {
+                        case SET:
+                            SetShipCommand command = new SetShipCommand(coordinate,shipButton.getShip(),shipButton.getOrientation());
+                            result = gameRules.setShip(command);
+                            break;
+                        case REPOSITION:
+                            RepositionShipCommand reposition = new RepositionShipCommand(coordinateForReposition,coordinate,shipButton.getOrientation());
+                            RepositionShipResult repositionResult = gameRules.repositionShip(reposition);
+                            result = repositionResult.setShipResult();
+                            break;
+                        default:
+                            throw  new IllegalStateException("Unknown ship setting");
+                    }
+                    if (result.outcome() == SetShipOutcome.SET||result.outcome()==SetShipOutcome.SET_FINISHED) {
                         remaining.applySet(result);
                         contentPane.remove(shipButton);
                         sea.add(shipButton, 0);
                         shipButton.setLocation(nearestPoint);
+
                     } else {
-                        returnShipIsList(shipButton);
-                        new ShipPlacementFailureMessage(result.outcome());
+                        if (shipSetting == ShipSetting.SET) {
+                            returnShipIsList(shipButton);
+                            setError(result.outcome(), shipButton);
+                        }
+                        if (shipSetting == ShipSetting.REPOSITION) {
+                            returnShipIsList(shipButton);
+                            setError(result.outcome(), shipButton);
+                        }
                     }
-                }
             }
         } else {
+            remaining.applySet(null);
             returnShipIsList(shipButton);
             new ShipPlacementFailureMessage(SetShipOutcome.INVALID_DATA);
 
         }
-
+        sea.generatePreCanSetResultTrue();
+        repaintRevalidate();
     }
     @Override
     public void onDragged(ShipButton shipButton, MouseEvent e){
-
+        Point position = SwingUtilities.convertPoint(
+                shipButton,
+                e.getPoint(),
+                contentPane
+        );
+        setupCursor(position,shipButton);
+        applyPlacement(shipButton);
+        repaintRevalidate();
     }
     @Override
     public void onRotated(ShipButton shipButton, MouseEvent e){
@@ -81,11 +130,21 @@ public class PlacementShipButton implements ShipButton.MouseShipListener {
         return sea.getBounds().contains(pointIsContentPane);
     }
 
+    private boolean isPressedOverSea(Container container){
+        return sea==container;
+    }
+
     private Coordinate positionToCoordinate(Point point){
          return new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
     }
 
-    private Point findNearestSnapPoint(Point point) {
+    private Point findNearestSnapPoint(ShipButton shipButton,Point point) {
+
+         point = SwingUtilities.convertPoint(
+                shipButton.getParent(),
+                shipButton.getLocation(),
+                sea
+        );
 
         Point nearestPoint = null;
         double minDistance = Double.MAX_VALUE;
@@ -114,7 +173,89 @@ public class PlacementShipButton implements ShipButton.MouseShipListener {
         remaining.add(shipButton, 0);
         shipButton.setLocation(sourcePosition);
         sea.generatePreCanSetResultTrue();
-        shipButton.repaintRevalidate();
+        repaintRevalidate();
+    }
+    private void returnShipIsSea(ShipButton shipButton){
+        Point sourcePosition = SwingUtilities.convertPoint(
+                contentPane,
+                initialPosition,
+                sea
+        );
+        sea.generatePreCanSetResultTrue();
+        contentPane.remove(shipButton);
+        sea.add(shipButton,0);
+        shipButton.setLocation(sourcePosition);
+        repaintRevalidate();
+    }
+
+    private void setError(SetShipOutcome setShipOutcome,ShipButton shipButton) {
+        if (shipSetting == ShipSetting.SET) {
+            returnShipIsList(shipButton);
+        }
+        if (shipSetting == ShipSetting.REPOSITION) {
+            returnShipIsSea(shipButton);
+        }
+        new ShipPlacementFailureMessage(setShipOutcome);
+    }
+    private void repaintRevalidate(){
+        contentPane.revalidate();
+        contentPane.repaint();
+
+        sea.revalidate();
+        sea.repaint();
+
+        remaining.revalidate();
+        remaining.repaint();
+    }
+
+    private void resetPaint(){
+        sea.generatePreCanSetResultTrue();
+        newCoordinate = null;
+        newOrientation = null;
+    }
+
+    private void appleDeleteShip(Coordinate coordinate){
+        sea.generatePreCanSetResultTrue();
+        sea.unSetShip(coordinate);
+    }
+    private void setupCursor(Point position,ShipButton shipButton) {
+        //запомнили куда сместилась мышь на экране
+        int thisX = position.x;
+        int thisY = position.y;
+        //вычислили координаты нового положения курсора после будущего смещения
+        int nextX = thisX - offset.x;
+        int nextY = thisY - offset.y;
+        //границы поля перетаскивания
+        int minX = 0;
+        int minY = 0;
+        int maxX = SwingConfig.WIDTH- shipButton.getWidth();
+        int maxY = SwingConfig.HEIGHT- shipButton.getHeight();
+
+        //удерживаем nextX в пределах minX и maxX
+        nextX = Math.clamp(nextX, minX, maxX);
+        nextY = Math.clamp(nextY, minY, maxY);
+        shipButton.setLocation(nextX, nextY);//применяем новые координаты курсора
+    }
+    private void applyPlacement(ShipButton shipButton) {
+        if (isShipOverSea(shipButton.getLocation())) {
+            Point nearestPoint = findNearestSnapPoint(shipButton,shipButton.getLocation());
+            if (nearestPoint != null) {
+                Coordinate coordinate = positionToCoordinate(nearestPoint);
+                if (!coordinate.equals(newCoordinate)||
+                     shipButton.getOrientation()!=newOrientation) {
+                        applyPrePlacementPaint(coordinate,shipButton);
+                }
+            }
+        } else {
+            resetPaint();
+        }
+    }
+
+    private void applyPrePlacementPaint(Coordinate coordinate, ShipButton shipButton) {
+        sea.generatePreCanSetResultTrue();
+        newCoordinate = coordinate;
+        newOrientation = shipButton.getOrientation();
+        sea.newPaintByResult(coordinate, shipButton.getOrientation(), shipButton);
     }
 
 }
