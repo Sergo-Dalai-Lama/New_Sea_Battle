@@ -144,3 +144,44 @@ rotate (правый клик):
 - если корабль сейчас на поле → сначала снять с модели
 - поменять ориентацию и размер
 - если был на поле → попробовать поставить обратно в новой ориентации (или оставить в воздухе)
+
+##СХЕМА SWING UI РАССТАНОВКИ КОРАБЛЕЙ
+```mermaid
+flowchart TB
+MouseDragged([MouseDragged])
+MousePressed([MousePressed])
+MouseReleased([MouseReleased])
+
+    ShipButton[ShipButton]
+    PlaceButtonController{{PlaceButtonController}}
+    GameCore[GameCore]
+    ListModel[ListModel]
+    SwingList[SwingList]
+    SwingSea[SwingSea]
+    ContentPane[ContentPane]
+    Frame[frame]
+
+    MouseDragged --> ShipButton
+    MousePressed --> ShipButton
+    MouseReleased --> ShipButton
+
+    ShipButton --> SwingList
+
+    GameCore-->PlaceButtonController
+    SwingSea-->PlaceButtonController
+    ContentPane-->PlaceButtonController
+
+    GameCore --> ListModel
+    ListModel --> SwingList
+
+    SwingSea --> ContentPane
+    ContentPane --> Frame
+    SwingList --> Frame
+```
+
+SwingList - только рисует список кораблей, не умеет их переносить, обрабатывать, изменять.
+
+SwingSea - только рисует поле и корабли на нем, не умеет рассчитывать цвета
+
+ContentPane - только используется для ограничений на перемещение кнопки, не умеет рассчитывать перемещения,
+не умет вычислять, можно ли бросить кнопку

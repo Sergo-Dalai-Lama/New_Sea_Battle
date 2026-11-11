@@ -6,9 +6,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import static com.ColorStartGame.*;
 
 public class ShipButton extends JButton {
+    public interface MouseShipListener {
+        void onPressed(ShipButton shipButton, MouseEvent e);
+        void onReleased(ShipButton shipButton, MouseEvent e);
+        void onDragged(ShipButton shipButton, MouseEvent e);
+        void onRotated(ShipButton shipButton, MouseEvent e);
+    }
+    private MouseShipListener mouseShipListener;
     private final SwingStartGameFrame frame;
     private Container shipListContainer;
     private Container sourcePanel=null;
@@ -21,7 +29,7 @@ public class ShipButton extends JButton {
     private Coordinate newCoordinate = null;
     private Orientation newOrientation = null;
     private ShipSetting shipSetting;
-    public ShipButton(Ship ship, SwingStartGameFrame frame) {
+    public ShipButton(Ship ship, SwingStartGameFrame frame, PlacementShipButton controller) {
         this.ship = ship;
         this.contentPane = frame.getContentPane();
         this.frame = frame;
@@ -36,7 +44,7 @@ public class ShipButton extends JButton {
             public void mousePressed(MouseEvent e){//метод вызывается когда зажали на компоненте курсор
 
             if (e.getButton() == MouseEvent.BUTTON3){
-                rotateShip();
+                controller.onRotated(ShipButton.this, e);
             }
             sourcePanel=getParent();
             if (sourcePanel!=frame.getSea()){//если объект зажали не на поле боя, то зажали на панели размещения
@@ -50,7 +58,7 @@ public class ShipButton extends JButton {
                     applyDeleteShip(coordinate);
                 }
             }
-
+            mouseShipListener.onPressed(ShipButton.this, e);
             initialLocation = SwingUtilities.convertPoint(//перевели из координат панели, на которой зажали
                     // и перевели в координаты contentPane
                     sourcePanel,
@@ -67,14 +75,16 @@ public class ShipButton extends JButton {
 
             @Override
             public void mouseReleased(MouseEvent e) {//вызывается когда мышь отпустили
-                SetShipResult result = frame.getSea().setShipResult(newCoordinate, ship, orientation);
+             /*   SetShipResult result = frame.getSea().setShipResult(newCoordinate, ship, orientation);
                 frame.getRemaining().applySet(result);
                 SetShipOutcome setShipOutcome = result.outcome();
                 if (setShipOutcome == SetShipOutcome.SET||setShipOutcome==SetShipOutcome.SET_FINISHED){
                     setShip();
                 } else {
                     setError(setShipOutcome);
-                }
+                }*/
+
+                controller.onReleased(ShipButton.this, e);
                 repaintRevalidate();
             }
 
@@ -186,7 +196,7 @@ public class ShipButton extends JButton {
                 }
             }
     }
-    private void repaintRevalidate(){
+    public void repaintRevalidate(){
         contentPane.revalidate();
         contentPane.repaint();
 
@@ -195,7 +205,7 @@ public class ShipButton extends JButton {
 
         shipListContainer.revalidate();
         shipListContainer.repaint();
-    }
+    }/*
     private void returnShipIsList(){//метод возвращения корабля в список
         orientation = Orientation.HORIZONTAL;
         setSize(SwingConfig.WIDTH_DECK*ship.getSize(),SwingConfig.HEIGHT_DECK);
@@ -209,7 +219,7 @@ public class ShipButton extends JButton {
         shipListContainer.add(ShipButton.this, 0);
         setLocation(sourcePosition);
         repaintRevalidate();
-    }
+    }*/
 
     private void returnShipIsSea(){
             Point sourcePosition = SwingUtilities.convertPoint(
@@ -253,15 +263,15 @@ public class ShipButton extends JButton {
 
         return null;
     }
-
-    private void setShip() {
-        Point nearestPoint = findNearestSnapPoint(getLocation());
-        if (nearestPoint!=null) {
-            contentPane.remove(ShipButton.this);
-            frame.getSea().add(ShipButton.this,0);
-            setLocation(nearestPoint);
+    /*
+        private void setShip() {
+            Point nearestPoint = findNearestSnapPoint(getLocation());
+            if (nearestPoint!=null) {
+                contentPane.remove(ShipButton.this);
+                frame.getSea().add(ShipButton.this,0);
+                setLocation(nearestPoint);
+            }
         }
-    }
 
     private void setError(SetShipOutcome setShipOutcome) {
         if (shipSetting==ShipSetting.SET) {
@@ -271,9 +281,9 @@ public class ShipButton extends JButton {
             returnShipIsSea();
         }
         new ShipPlacementFailureMessage(setShipOutcome);
-    }
+    }  */
 
-    private void rotateShip(){
+    public void rotateShip(){
         newOrientation = null;
         if (orientation != Orientation.VERTICAL) {
             orientation = Orientation.VERTICAL;
@@ -285,4 +295,18 @@ public class ShipButton extends JButton {
         repaint();
     }
 
+    public void setMouseListener(MouseShipListener mouseShipListener) {
+        this.mouseShipListener = mouseShipListener;
+    }
+
+    public void setOrientation(Orientation orientation) {
+        this.orientation = orientation;
+    }
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    public int getShipSize(){
+        return ship.getSize();
+    }
 }

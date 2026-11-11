@@ -35,6 +35,8 @@ private final SwingStartGameSea sea;
         int x = getContentPane().getWidth() - SwingConfig.WIDTH_SEA + SwingConfig.WIDTH_DECK;
         remaining.setLocation(x, y);
         contentPane.add(remaining);
+        PlacementShipButton placementController = new PlacementShipButton(sea,remaining,contentPane,gameRules);
+        remaining.bindController(placementController);
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
