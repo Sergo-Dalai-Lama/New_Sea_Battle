@@ -37,7 +37,7 @@ public final ListShip listShip;
         contentPane.add(remaining);
         ControllerPlacement placementController = new ControllerPlacement(sea, remaining,startBattleButton,generateSetShipButton,contentPane,gameRules);
         remaining.bindController(placementController);
-        ControllerStartButton startGame = new ControllerStartButton(contentPane,gameRules);
+        ControllerStartButton startGame = new ControllerStartButton(contentPane,listShip,gameRules,this);
         startBattleButton.setStartButtonListener(startGame);
         setResizable(false);
         setLocationRelativeTo(null);

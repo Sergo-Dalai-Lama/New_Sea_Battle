@@ -41,6 +41,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                     Orientation orientation = shipForPlacementState.orientation;
                     Coordinate coordinate = shipForPlacementState.coordinate;
                     ShipButton shipButton = new ShipButton(ship);
+                    shipButton.setMouseListener(ControllerPlacement.this);
                     shipButton.setOrientation(orientation);
                     if (orientation == Orientation.VERTICAL) {
                         shipButton.setSize(SwingConfig.WIDTH_DECK, SwingConfig.HEIGHT_DECK*shipButton.getShipSize());
@@ -50,6 +51,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                 }
                 //перерисовали всё
                 repaintRevalidate();
+                startBattleButton.setEnabledButton();
             }
         });
     }

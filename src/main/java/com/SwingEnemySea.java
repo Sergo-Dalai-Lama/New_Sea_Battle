@@ -17,6 +17,7 @@ public class SwingEnemySea extends JPanel {
         this.model = model;
         setLayout(null);
         setBounds(0, 0, SwingConfig.WIDTH_SEA, SwingConfig.HEIGHT_SEA);
+        setVisible(true);
         generatePoints();
     }
 
@@ -57,7 +58,7 @@ public class SwingEnemySea extends JPanel {
                             g2d.setColor(MISS);
                             break;
                         case UNKNOWN:
-                            g2d.setColor(FILLED_CELL);
+                            g2d.setColor(UNKNOWN_CELL);
                             break;
                     }
                     g2d.fillRect(i*SwingConfig.WIDTH_DECK,j*SwingConfig.HEIGHT_DECK,SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK);
