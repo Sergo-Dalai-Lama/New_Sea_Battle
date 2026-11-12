@@ -93,9 +93,6 @@ public void paintByResult(Coordinate coordinate, Orientation orientation, ShipBu
     repaint();
 }
 
-public void setShip(SetShipCommand command) {
-
-}
 public void generatePreCanSetResultTrue() {
         for (int i = 0; i < GameConfig.ROWS; i++) {
             for (int j = 0; j < GameConfig.COLUMNS; j++) {

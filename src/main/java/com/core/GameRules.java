@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GameRules {
     private final ListShip listShip;
     private final List<Coordinate> unBlockedCells;
+    private final List<ShipForPlacementState> listShipForPlacementState = new ArrayList<>();
     public GameRules(ListShip listShip) {
         this.listShip = listShip;
         unBlockedCells = new ArrayList<>();
@@ -237,6 +238,7 @@ public class GameRules {
 
     public void generationShipFormation(){
         listShip.clear();
+        listShipForPlacementState.clear();
         List<Coordinate> includeCoordinates = new ArrayList<>();
         for (int i = 0; i <GameConfig.ROWS; i++) {//создали список всех координат
             for (int j = 0; j <GameConfig.COLUMNS; j++) {
@@ -262,7 +264,7 @@ public class GameRules {
                 SetShipResult result = this.setShip(setShipCommand);
 
                 if (orientation == Orientation.HORIZONTAL) {//если горизонтальное положение
-                    if (result.outcome() == SetShipOutcome.SET) {//проверить поставился ли корабль
+                    if (result.outcome() == SetShipOutcome.SET||result.outcome() ==SetShipOutcome.SET_FINISHED) {//проверить поставился ли корабль
                         //если да, то надо удалить координаты и корабль
                         removeCoordinatesBlock(includeCoordinates,coordinate,ship,Orientation.HORIZONTAL);
                         includeShip.remove(ship);
@@ -271,7 +273,7 @@ public class GameRules {
                     } else {//иначе поменять ориентацию и попытаться еще раз
                         setShipCommand = new SetShipCommand(coordinate, ship, Orientation.VERTICAL);
                         result = this.setShip(setShipCommand);
-                        if (result.outcome() == SetShipOutcome.SET) {//проверить поставился ли корабль
+                        if (result.outcome() == SetShipOutcome.SET||result.outcome() ==SetShipOutcome.SET_FINISHED) {//проверить поставился ли корабль
                             //если да, то надо удалить координаты и корабль
                             removeCoordinatesBlock(includeCoordinates,coordinate,ship,Orientation.VERTICAL);
                             includeShip.remove(ship);
@@ -280,25 +282,18 @@ public class GameRules {
                             includeCoordinates.remove(coordinate);
                         }
                     }
-
                 } else {
-                    if (result.outcome() == SetShipOutcome.SET) {
-
+                    if (result.outcome() == SetShipOutcome.SET||result.outcome() ==SetShipOutcome.SET_FINISHED) {
                         removeCoordinatesBlock(includeCoordinates,coordinate,ship,Orientation.VERTICAL);
                         includeShip.remove(ship);
                         flag = false;
-
                     } else {//иначе поменять ориентацию и попытаться еще раз
-
                         setShipCommand = new SetShipCommand(coordinate, ship, Orientation.HORIZONTAL);
                         result = this.setShip(setShipCommand);
-
-                        if (result.outcome() == SetShipOutcome.SET) {
-
+                        if (result.outcome() == SetShipOutcome.SET||result.outcome() ==SetShipOutcome.SET_FINISHED) {
                             removeCoordinatesBlock(includeCoordinates,coordinate,ship,Orientation.HORIZONTAL);
                             includeShip.remove(ship);
                             flag = false;
-
                         } else {
                             includeCoordinates.remove(coordinate);
                         }
@@ -354,6 +349,8 @@ public class GameRules {
 
     private void removeCoordinatesBlock(List<Coordinate> includeCoordinates, Coordinate coordinate, Ship ship,Orientation orientation) {
 
+    listShipForPlacementState.add(new ShipForPlacementState(ship,coordinate,orientation));
+
     List<Coordinate> coordinatesBlockSet = new ArrayList<>();//создали пустой список координат, которые надо удалить
     for (int i = 0;i<ship.getSize();i++) {//заполнили нужными для удаления координатами
         if (orientation == Orientation.HORIZONTAL) {
@@ -376,6 +373,10 @@ public class GameRules {
             }
         }
     }
+}
+
+public List<ShipForPlacementState> getShipsForPlacement() {
+        return listShipForPlacementState;
 }
 
 }

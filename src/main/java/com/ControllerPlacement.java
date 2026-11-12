@@ -34,7 +34,20 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                 gameRules.generationShipFormation();//сгенерировали расстановку
                 remaining.removeAll();//удалили корабли из списка
                 //расставили корабли на поле
+                sea.removeAll();
 
+                for (ShipForPlacementState shipForPlacementState: gameRules.getShipsForPlacement()){
+                    Ship ship = shipForPlacementState.ship;
+                    Orientation orientation = shipForPlacementState.orientation;
+                    Coordinate coordinate = shipForPlacementState.coordinate;
+                    ShipButton shipButton = new ShipButton(ship);
+                    shipButton.setOrientation(orientation);
+                    if (orientation == Orientation.VERTICAL) {
+                        shipButton.setSize(SwingConfig.WIDTH_DECK, SwingConfig.HEIGHT_DECK*shipButton.getShipSize());
+                    }
+                    sea.add(shipButton,0);
+                    shipButton.setLocation(coordinateToPoint(coordinate));
+                }
                 //перерисовали всё
                 repaintRevalidate();
             }
@@ -53,7 +66,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
             );
             Point nearestPoint = findNearestSnapPoint(shipButton,initialPosition);
             if (nearestPoint!=null) {
-                coordinateForReposition = positionToCoordinate(nearestPoint);
+                coordinateForReposition = pointToCoordinate(nearestPoint);
                 UnSetShipCommand command = new UnSetShipCommand(coordinateForReposition);
                 gameRules.unSetShip(command);
                 sea.generatePreCanSetResultTrue();
@@ -85,7 +98,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
             );
             Point nearestPoint = findNearestSnapPoint(shipButton,position);//вычислили ближайшую точку привязки
             if (nearestPoint != null){
-                Coordinate coordinate = positionToCoordinate(nearestPoint);//перевели точку привязки в координату
+                Coordinate coordinate = pointToCoordinate(nearestPoint);//перевели точку привязки в координату
                     //дать команду на попытку установить в remaining, sea, contentPane
                     SetShipResult result = gameRules.setShip(new SetShipCommand(coordinate,shipButton.getShip(),shipButton.getOrientation()));
                     if (result.outcome() == SetShipOutcome.SET||result.outcome()==SetShipOutcome.SET_FINISHED) {
@@ -144,8 +157,11 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
         return sea==container;
     }
 
-    private Coordinate positionToCoordinate(Point point){
+    private Coordinate pointToCoordinate(Point point){
          return new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
+    }
+    private Point coordinateToPoint(Coordinate coordinate){
+        return new Point(coordinate.x()*SwingConfig.WIDTH_DECK, coordinate.y()*SwingConfig.HEIGHT_DECK);
     }
 
     private Point findNearestSnapPoint(ShipButton shipButton,Point point) {
@@ -246,7 +262,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
         if (isShipOverSea(shipButton.getLocation())) {
             Point nearestPoint = findNearestSnapPoint(shipButton,shipButton.getLocation());
             if (nearestPoint != null) {
-                Coordinate coordinate = positionToCoordinate(nearestPoint);
+                Coordinate coordinate = pointToCoordinate(nearestPoint);
                 if (!coordinate.equals(newCoordinate)||
                      shipButton.getOrientation()!=newOrientation) {
                         applyPrePlacementPaint(coordinate,shipButton);
