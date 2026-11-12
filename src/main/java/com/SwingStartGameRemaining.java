@@ -1,16 +1,14 @@
 package com;
 
-import com.core.SetShipOutcome;
 import com.core.SetShipResult;
 import com.core.UnSetShipResult;
 import com.displayModel.RemainingShipModel;
 import javax.swing.*;
-import java.awt.event.MouseEvent;
 
 public class SwingStartGameRemaining extends JPanel {
     private final RemainingShipModel remainingShipModel = new RemainingShipModel();
 
-    private PlacementShipButton controller;
+    private ControllerPlacement controller;
     public SwingStartGameRemaining() {
 
         setLayout(null);
@@ -47,7 +45,7 @@ public class SwingStartGameRemaining extends JPanel {
         remainingShipModel.applyUnSetShipResult(result);
     }
 
-    public void bindController(PlacementShipButton controller) {
+    public void bindController(ControllerPlacement controller) {
         this.controller = controller;
         setRemainingShip();
     }

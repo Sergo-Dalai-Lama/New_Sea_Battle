@@ -1,12 +1,10 @@
 package com;
 
 import com.core.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import static com.ColorStartGame.*;
 
 public class ShipButton extends JButton {
