@@ -15,7 +15,6 @@ public class StartBattleButton extends JButton {
         setText("Start Battle");
         setLayout(null);
         setEnabled(false);
-        int width = SwingConfig.WIDTH/8;
         int x = SwingConfig.WIDTH/2;
         int y = 8*SwingConfig.HEIGHT/9;
         setBounds(x,y,SwingConfig.WIDTH/8,SwingConfig.HEIGHT/10);

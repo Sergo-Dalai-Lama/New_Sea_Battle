@@ -5,6 +5,8 @@ import com.core.GameRules;
 import com.core.ListShip;
 import com.displayModel.EnemySeaDisplayModel;
 import com.displayModel.MySeaDisplayModel;
+import com.displayModel.ScoreModel;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -22,10 +24,15 @@ public class SwingBattleGamePanel extends JPanel {
         EnemySeaDisplayModel model = new EnemySeaDisplayModel();
         SwingEnemySea enemySea = new SwingEnemySea(model);
         SwingMySea mySea = new SwingMySea(new MySeaDisplayModel(listShip));
+        SurrenderButton surrenderButton = new SurrenderButton();
+        ScoreModel scoreModel = new ScoreModel();
+        SwingScore swingScore = new SwingScore(scoreModel);
+        add(swingScore);
+        add(surrenderButton);
         add(enemySea);
         add(mySea);
         enemySea.setLocation(0, y);
-        ControllerBattle controllerBattle = new ControllerBattle(this,enemySea,mySea,gameRules,bot);
+        ControllerBattle controllerBattle = new ControllerBattle(this,enemySea,mySea,gameRules,bot,swingScore);
         JLabel textEnemy = new JLabel("This is Enemy sea");
         JLabel textMy = new JLabel("This is My sea");
         textEnemy.setFont(new Font("Colibri", Font.BOLD, 15));

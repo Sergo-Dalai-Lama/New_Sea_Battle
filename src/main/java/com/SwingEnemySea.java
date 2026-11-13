@@ -78,14 +78,14 @@ public class SwingEnemySea extends JPanel {
                 for (int j = 0; j<GameConfig.COLUMNS; j++) {
                     switch (model.getType(i,j)) {
                         case HIT:
-                            if (isHoveredCell(hoveredCell,i,j)&&isBlocked) {
+                            if (isHoveredCell(hoveredCell,i,j)&&!isBlocked) {
                                 g2d.setColor(FORBIDDEN_ATTACK);
                             } else {
                                 g2d.setColor(HIT);
                             }
                             break;
                         case MISS:
-                            if (isHoveredCell(hoveredCell,i,j)&&isBlocked) {
+                            if (isHoveredCell(hoveredCell,i,j)&&!isBlocked) {
                                 g2d.setColor(FORBIDDEN_ATTACK);
                             } else {
                             g2d.setColor(MISS);

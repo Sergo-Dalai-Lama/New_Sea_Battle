@@ -39,7 +39,6 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                 remaining.removeAll();//удалили корабли из списка
                 //расставили корабли на поле
                 sea.removeAll();
-
                 for (ShipForPlacementState shipForPlacementState: gameRules.getShipsForPlacement()){
                     Ship ship = shipForPlacementState.ship;
                     Orientation orientation = shipForPlacementState.orientation;
@@ -90,6 +89,8 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
             remaining.remove(shipButton);
             contentPane.add(shipButton, 0);
         }
+        System.out.println(e.getPoint());
+        System.out.println(initialPosition);
         offset = e.getPoint();
         shipButton.setLocation(initialPosition);
         repaintRevalidate();
@@ -119,6 +120,8 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                             setError(result.outcome(), shipButton);
                         }
                         if (shipSetting == ShipSetting.REPOSITION) {
+                            System.out.println("REPOSITION FAILED");
+                            System.out.println(result.outcome());
                             restoreStartButtonState();
                             returnShipIsSea(shipButton);
                             setError(result.outcome(), shipButton);
@@ -153,6 +156,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
     @Override
     public void onRotated(ShipButton shipButton, MouseEvent e){
         shipButton.rotateShip();
+        newOrientation = shipButton.getOrientation();
     }
 
     private void restoreStartButtonState(){
@@ -210,6 +214,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                 initialPosition,
                 remaining
         );
+
         sea.generatePreCanSetResultTrue();
         contentPane.remove(shipButton);
         remaining.add(shipButton, 0);
@@ -217,11 +222,21 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
         repaintRevalidate();
     }
     private void returnShipIsSea(ShipButton shipButton){
+        if (newOrientation == Orientation.HORIZONTAL) {
+            shipButton.setOrientation(Orientation.VERTICAL);
+            shipButton.setSize(SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK*shipButton.getShipSize());
+        } else {
+            shipButton.setOrientation(Orientation.HORIZONTAL);
+            shipButton.setSize(SwingConfig.WIDTH_DECK*shipButton.getShipSize(),SwingConfig.HEIGHT_DECK);
+        }
+        resetPaint();
+
         Point sourcePosition = SwingUtilities.convertPoint(
                 contentPane,
                 initialPosition,
                 sea
         );
+        System.out.println(sourcePosition);
         sea.generatePreCanSetResultTrue();
         contentPane.remove(shipButton);
         sea.add(shipButton,0);
@@ -294,6 +309,4 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
         newOrientation = shipButton.getOrientation();
         sea.paintByResult(coordinate, shipButton.getOrientation(), shipButton);
     }
-
-
 }

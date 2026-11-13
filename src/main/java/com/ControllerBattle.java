@@ -1,11 +1,8 @@
 package com;
 
 import com.core.*;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
@@ -16,15 +13,16 @@ public class ControllerBattle implements SwingEnemySea.EnemySeaMouseListener{
     private final GameRules gameRules;
     private Coordinate newCoordinate = null;
     private final Bot bot;
+    private final SwingScore  swingScore;
     private boolean isPlayerTurn = true;
-    public ControllerBattle(SwingBattleGamePanel gamePanel,SwingEnemySea enemySea, SwingMySea mySea,  GameRules gameRules,Bot bot) {
+    public ControllerBattle(SwingBattleGamePanel gamePanel,SwingEnemySea enemySea, SwingMySea mySea,  GameRules gameRules,Bot bot,SwingScore swingScore) {
         this.gamePanel = gamePanel;
         this.enemySea = enemySea;
         this.mySea = mySea;
         this.gameRules = gameRules;
         this.bot = bot;
+        this.swingScore = swingScore;
         enemySea.setEnemySeaMouseListener(this);
-
     }
 
     @Override
@@ -37,7 +35,7 @@ public class ControllerBattle implements SwingEnemySea.EnemySeaMouseListener{
             enemySea.applyAttackResult(attackResult);
             if (attackResult.outcome()!=AttackOutcome.INVALID_TARGET) {
                 if (attackResult.outcome() == AttackOutcome.HIT || attackResult.outcome() == AttackOutcome.DESTROYED) {
-                    //вести подсчет убитых
+                    swingScore.scoreUpdate(attackResult);
                 }
                 if (attackResult.outcome() == AttackOutcome.MISS) {
                     isPlayerTurn = false;
@@ -52,9 +50,9 @@ public class ControllerBattle implements SwingEnemySea.EnemySeaMouseListener{
             List<AttackResult> results = bot.start(gameRules);
             for (AttackResult  result : results) {
                 mySea.applyAttackResult(result);
-                enemySea.unBlockAttack();
-                isPlayerTurn = true;
             }
+            enemySea.unBlockAttack();
+            isPlayerTurn = true;
             if (bot.getState()==GameState.WIN){
                 //выводить сообщение о победе
             }
