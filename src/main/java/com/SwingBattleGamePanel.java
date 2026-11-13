@@ -1,5 +1,6 @@
 package com;
 
+import com.core.Bot;
 import com.core.GameRules;
 import com.core.ListShip;
 import com.displayModel.EnemySeaDisplayModel;
@@ -13,6 +14,7 @@ public class SwingBattleGamePanel extends JPanel {
     public SwingBattleGamePanel(ListShip listShip, GameRules gameRules) {
         this.listShip = listShip;
         this.gameRules = gameRules;
+        Bot bot = new Bot();
         setLayout(null);
         setBounds(0, 0, SwingConfig.WIDTH, SwingConfig.HEIGHT);
         int y = (SwingConfig.HEIGHT - SwingConfig.HEIGHT_SEA)/2;
@@ -23,7 +25,7 @@ public class SwingBattleGamePanel extends JPanel {
         add(enemySea);
         add(mySea);
         enemySea.setLocation(0, y);
-        ControllerBattle controllerBattle = new ControllerBattle(this,enemySea,mySea,gameRules);
+        ControllerBattle controllerBattle = new ControllerBattle(this,enemySea,mySea,gameRules,bot);
         JLabel textEnemy = new JLabel("This is Enemy sea");
         JLabel textMy = new JLabel("This is My sea");
         textEnemy.setFont(new Font("Colibri", Font.BOLD, 15));

@@ -1,5 +1,6 @@
 package com;
 
+import com.core.AttackResult;
 import com.core.GameConfig;
 import com.displayModel.MySeaDisplayModel;
 
@@ -64,6 +65,12 @@ public class SwingMySea extends JPanel {
         for (int i = 0;i<=SwingConfig.WIDTH_SEA/SwingConfig.SCALE_MY_SEA;i+=SwingConfig.WIDTH_DECK/SwingConfig.SCALE_MY_SEA){
             g2d.drawLine(i,0,i,SwingConfig.HEIGHT_SEA/SwingConfig.SCALE_MY_SEA);
         }
+    }
+
+    public void applyAttackResult(AttackResult  result) {
+        model.applyAttackResultMySea(result);
+        revalidate();
+        repaint();
     }
 }
 

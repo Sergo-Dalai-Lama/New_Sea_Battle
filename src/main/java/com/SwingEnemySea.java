@@ -1,10 +1,7 @@
 package com;
 
-import com.core.Coordinate;
-import com.core.GameConfig;
+import com.core.*;
 import com.displayModel.EnemySeaDisplayModel;
-import com.displayModel.TypeCellEnemy;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -23,12 +20,14 @@ public class SwingEnemySea extends JPanel {
     private EnemySeaDisplayModel  model;
     private final List<Point> points = new ArrayList<Point>();
     private Coordinate hoveredCell = null;
+    private boolean isBlocked = false;
     public SwingEnemySea(EnemySeaDisplayModel  model) {
         this.model = model;
         setLayout(null);
         setBounds(0, 0, SwingConfig.WIDTH_SEA, SwingConfig.HEIGHT_SEA);
         setVisible(true);
         generatePoints();
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -75,29 +74,33 @@ public class SwingEnemySea extends JPanel {
 
     private void paintEnemySea(Graphics g) {
          Graphics2D  g2d = (Graphics2D) g;
-
             for (int i = 0; i<GameConfig.ROWS; i++) {
                 for (int j = 0; j<GameConfig.COLUMNS; j++) {
                     switch (model.getType(i,j)) {
                         case HIT:
-                            if (isHoveredCell(hoveredCell,i,j)) {
+                            if (isHoveredCell(hoveredCell,i,j)&&isBlocked) {
                                 g2d.setColor(FORBIDDEN_ATTACK);
                             } else {
                                 g2d.setColor(HIT);
                             }
                             break;
                         case MISS:
-                            if (isHoveredCell(hoveredCell,i,j)) {
+                            if (isHoveredCell(hoveredCell,i,j)&&isBlocked) {
                                 g2d.setColor(FORBIDDEN_ATTACK);
                             } else {
                             g2d.setColor(MISS);
                             }
                             break;
-                        case UNKNOWN:
-                            if (isHoveredCell(hoveredCell,i,j)) {
-                                g2d.setColor(ALLOWED_ATTACK);
-                            } else {
-                                g2d.setColor(UNKNOWN_CELL);
+                        case UNKNOWN: {
+                                if (isHoveredCell(hoveredCell, i, j)) {
+                                    if (isBlocked) {
+                                        g2d.setColor(FORBIDDEN_ATTACK);
+                                    } else {
+                                        g2d.setColor(ALLOWED_ATTACK);
+                                    }
+                                } else {
+                                    g2d.setColor(UNKNOWN_CELL);
+                                }
                             }
                             break;
                     }
@@ -131,8 +134,25 @@ public class SwingEnemySea extends JPanel {
     public void resetHoveredCell() {
         hoveredCell = null;
     }
+    public void blockAttack(){
+        isBlocked = true;
+        revalidate();
+        repaint();
+    }
+    public void unBlockAttack(){
+        isBlocked = false;
+        revalidate();
+        repaint();
+    }
 
     public void setEnemySeaMouseListener(EnemySeaMouseListener enemySeaMouseListener){
         this.enemySeaMouseListener = enemySeaMouseListener;
     }
+
+    public void applyAttackResult(AttackResult result){
+        model.applyAttackResult(result);
+        revalidate();
+        repaint();
+    }
+
 }

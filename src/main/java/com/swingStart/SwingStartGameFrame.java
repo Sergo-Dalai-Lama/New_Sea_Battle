@@ -45,8 +45,8 @@ public final ListShip listShip;
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
-        generateSetShipButton.doClick();
-        startGame.onStartBattleButton();
+       // generateSetShipButton.doClick();
+        //startGame.onStartBattleButton();
     }
 
 }
