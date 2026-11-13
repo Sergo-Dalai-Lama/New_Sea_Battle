@@ -1,24 +1,51 @@
 package com;
 
+import com.core.Coordinate;
 import com.core.GameConfig;
 import com.displayModel.EnemySeaDisplayModel;
+import com.displayModel.TypeCellEnemy;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.ColorBattleGame.*;
 
 public class SwingEnemySea extends JPanel {
+    public interface EnemySeaMouseListener{
+        void onClick(MouseEvent event);
+        void onMoved(MouseEvent event);
+        void onExted(MouseEvent event);
+    }
+    private EnemySeaMouseListener  enemySeaMouseListener;
     private EnemySeaDisplayModel  model;
     private final List<Point> points = new ArrayList<Point>();
+    private Coordinate hoveredCell = null;
     public SwingEnemySea(EnemySeaDisplayModel  model) {
         this.model = model;
         setLayout(null);
         setBounds(0, 0, SwingConfig.WIDTH_SEA, SwingConfig.HEIGHT_SEA);
         setVisible(true);
         generatePoints();
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                enemySeaMouseListener.onClick(e);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                enemySeaMouseListener.onExted(e);
+            }
+        });
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                enemySeaMouseListener.onMoved(e);
+            }
+        });
+
     }
 
     private void generatePoints() {
@@ -29,6 +56,7 @@ public class SwingEnemySea extends JPanel {
             }
         }
     }
+
 
     public List<Point> getPoints() {
         return List.copyOf(points);
@@ -52,13 +80,25 @@ public class SwingEnemySea extends JPanel {
                 for (int j = 0; j<GameConfig.COLUMNS; j++) {
                     switch (model.getType(i,j)) {
                         case HIT:
-                            g2d.setColor(HIT);
+                            if (isHoveredCell(hoveredCell,i,j)) {
+                                g2d.setColor(FORBIDDEN_ATTACK);
+                            } else {
+                                g2d.setColor(HIT);
+                            }
                             break;
                         case MISS:
+                            if (isHoveredCell(hoveredCell,i,j)) {
+                                g2d.setColor(FORBIDDEN_ATTACK);
+                            } else {
                             g2d.setColor(MISS);
+                            }
                             break;
                         case UNKNOWN:
-                            g2d.setColor(UNKNOWN_CELL);
+                            if (isHoveredCell(hoveredCell,i,j)) {
+                                g2d.setColor(ALLOWED_ATTACK);
+                            } else {
+                                g2d.setColor(UNKNOWN_CELL);
+                            }
                             break;
                     }
                     g2d.fillRect(i*SwingConfig.WIDTH_DECK,j*SwingConfig.HEIGHT_DECK,SwingConfig.WIDTH_DECK,SwingConfig.HEIGHT_DECK);
@@ -73,5 +113,26 @@ public class SwingEnemySea extends JPanel {
                 g2d.drawLine(i,0,i,SwingConfig.HEIGHT_SEA);
             }
 
+    }
+
+    private boolean isHoveredCell(Coordinate coordinate,int x,int y) {
+        if (coordinate!=null) {
+            if (coordinate.x()==x && coordinate.y()==y) {
+                return hoveredCell != null && hoveredCell.equals(coordinate);
+            }
+        }
+        return false;
+    }
+
+    public void setHoveredCell(Coordinate coordinate) {
+        hoveredCell = coordinate;
+    }
+
+    public void resetHoveredCell() {
+        hoveredCell = null;
+    }
+
+    public void setEnemySeaMouseListener(EnemySeaMouseListener enemySeaMouseListener){
+        this.enemySeaMouseListener = enemySeaMouseListener;
     }
 }

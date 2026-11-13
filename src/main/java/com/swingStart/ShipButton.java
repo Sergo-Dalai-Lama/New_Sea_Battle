@@ -1,11 +1,12 @@
-package com;
+package com.swingStart;
 
+import com.SwingConfig;
 import com.core.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import static com.ColorStartGame.*;
+import static com.swingStart.ColorStartGame.*;
 
 public class ShipButton extends JButton {
     public interface MouseShipListener {
@@ -36,7 +37,6 @@ public class ShipButton extends JButton {
             mouseShipListener.onRotated(ShipButton.this, e);
             }
             mouseShipListener.onPressed(ShipButton.this, e);
-
             }
 
             @Override

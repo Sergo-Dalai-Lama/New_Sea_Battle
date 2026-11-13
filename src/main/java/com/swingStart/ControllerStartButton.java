@@ -1,7 +1,9 @@
-package com;
+package com.swingStart;
 
+import com.SwingBattleGamePanel;
 import com.core.GameRules;
 import com.core.ListShip;
+
 import javax.swing.*;
 import java.awt.*;
 

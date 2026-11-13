@@ -1,4 +1,4 @@
-package com;
+package com.swingStart;
 
 import com.core.SetShipOutcome;
 import javax.swing.*;

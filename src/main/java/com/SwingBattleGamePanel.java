@@ -23,6 +23,7 @@ public class SwingBattleGamePanel extends JPanel {
         add(enemySea);
         add(mySea);
         enemySea.setLocation(0, y);
+        ControllerBattle controllerBattle = new ControllerBattle(this,enemySea,mySea,gameRules);
         JLabel textEnemy = new JLabel("This is Enemy sea");
         JLabel textMy = new JLabel("This is My sea");
         textEnemy.setFont(new Font("Colibri", Font.BOLD, 15));

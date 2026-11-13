@@ -1,11 +1,13 @@
-package com;
+package com.swingStart;
 
+import com.SwingConfig;
 import com.core.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import static com.ColorStartGame.*;
+import static com.swingStart.ColorStartGame.*;
 
 public class SwingStartGameSea extends JPanel {
     private final GameRules gameRules;

@@ -1,4 +1,4 @@
-package com;
+package com.swingStart;
 
 import java.awt.Color;
 

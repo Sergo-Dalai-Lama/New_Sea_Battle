@@ -1,4 +1,6 @@
-package com;
+package com.swingStart;
+
+import com.SwingConfig;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;

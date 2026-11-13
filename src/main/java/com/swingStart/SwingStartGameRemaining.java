@@ -1,8 +1,10 @@
-package com;
+package com.swingStart;
 
+import com.SwingConfig;
 import com.core.SetShipResult;
 import com.core.UnSetShipResult;
 import com.displayModel.RemainingShipModel;
+
 import javax.swing.*;
 
 public class SwingStartGameRemaining extends JPanel {

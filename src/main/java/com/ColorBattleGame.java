@@ -11,4 +11,6 @@ public final class ColorBattleGame{
     public final static Color MISS = new Color(255, 202, 122, 255);
     public final static Color HIT = new Color(248, 64, 64, 220);
     public final static Color DECK = new Color(202, 255, 153,255);
+    public final static Color ALLOWED_ATTACK = new Color(64, 90, 67, 255);
+    public final static Color FORBIDDEN_ATTACK = new Color(89, 64, 64, 255);
 }

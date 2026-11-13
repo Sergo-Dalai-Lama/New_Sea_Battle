@@ -1,6 +1,8 @@
-package com;
+package com.swingStart;
 
+import com.SwingConfig;
 import com.core.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,6 +24,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
     private Coordinate coordinateForReposition = null;
     private ShipSetting shipSetting;
     private StartBattleButton startBattleButton;
+    private boolean newEnabledStart = false;
     public ControllerPlacement(SwingStartGameSea sea, SwingStartGameRemaining remaining, StartBattleButton startBattleButton,GenerateSetShipButton generateSetShipButton, Container contentPane, GameRules gameRules) {
         this.sea = sea;
         this.gameRules = gameRules;
@@ -29,6 +32,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
         this.remaining = remaining;
         this.startBattleButton = startBattleButton;
         this.generateSetShipButton = generateSetShipButton;
+
     generateSetShipButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gameRules.generationShipFormation();//сгенерировали расстановку
@@ -52,6 +56,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                 //перерисовали всё
                 repaintRevalidate();
                 startBattleButton.setEnabledButton();
+                newEnabledStart = true;
             }
         });
     }
@@ -66,7 +71,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                     shipButton.getLocation(),
                     contentPane
             );
-            Point nearestPoint = findNearestSnapPoint(shipButton,initialPosition);
+            Point nearestPoint = findNearestSnapPoint(shipButton);
             if (nearestPoint!=null) {
                 coordinateForReposition = pointToCoordinate(nearestPoint);
                 UnSetShipCommand command = new UnSetShipCommand(coordinateForReposition);
@@ -93,12 +98,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
     @Override
     public void onReleased(ShipButton shipButton, MouseEvent e){
         if (isShipOverSea(shipButton.getLocation())){//сначала засекли, что отпустили кнопку над sea
-            Point position = SwingUtilities.convertPoint(//перевели координаты в sea
-                    contentPane,
-                    shipButton.getLocation(),
-                    sea
-            );
-            Point nearestPoint = findNearestSnapPoint(shipButton,position);//вычислили ближайшую точку привязки
+            Point nearestPoint = findNearestSnapPoint(shipButton);//вычислили ближайшую точку привязки
             if (nearestPoint != null){
                 Coordinate coordinate = pointToCoordinate(nearestPoint);//перевели точку привязки в координату
                     //дать команду на попытку установить в remaining, sea, contentPane
@@ -110,19 +110,23 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
                         shipButton.setLocation(nearestPoint);
                         if (result.outcome() == SetShipOutcome.SET_FINISHED) {
                             startBattleButton.setEnabledButton();
+                            newEnabledStart = true;
                         }
                     } else {
                         if (shipSetting == ShipSetting.SET) {
+                            restoreStartButtonState();
                             returnShipIsList(shipButton);
                             setError(result.outcome(), shipButton);
                         }
                         if (shipSetting == ShipSetting.REPOSITION) {
+                            restoreStartButtonState();
                             returnShipIsSea(shipButton);
                             setError(result.outcome(), shipButton);
                         }
                     }
             }
         } else {
+            restoreStartButtonState();
             if (shipSetting == ShipSetting.SET) {
                 returnShipIsList(shipButton);
             }
@@ -151,6 +155,14 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
         shipButton.rotateShip();
     }
 
+    private void restoreStartButtonState(){
+        if (newEnabledStart) {
+            startBattleButton.setEnabledButton();
+        } else {
+            startBattleButton.setDisabledButton();
+        }
+    }
+
     private boolean isShipOverSea(Point pointIsContentPane){
         return sea.getBounds().contains(pointIsContentPane);
     }
@@ -166,9 +178,9 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
         return new Point(coordinate.x()*SwingConfig.WIDTH_DECK, coordinate.y()*SwingConfig.HEIGHT_DECK);
     }
 
-    private Point findNearestSnapPoint(ShipButton shipButton,Point point) {
+    private Point findNearestSnapPoint(ShipButton shipButton) {
 
-         point = SwingUtilities.convertPoint(
+        Point point = SwingUtilities.convertPoint(
                 shipButton.getParent(),
                 shipButton.getLocation(),
                 sea
@@ -189,6 +201,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
 
         return null;
     }
+
     private void returnShipIsList(ShipButton shipButton){//метод возвращения корабля в список
         shipButton.setOrientation(Orientation.HORIZONTAL);
         shipButton.setSize(SwingConfig.WIDTH_DECK*shipButton.getShipSize(),SwingConfig.HEIGHT_DECK);
@@ -262,7 +275,7 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
     }
     private void applyPlacement(ShipButton shipButton) {
         if (isShipOverSea(shipButton.getLocation())) {
-            Point nearestPoint = findNearestSnapPoint(shipButton,shipButton.getLocation());
+            Point nearestPoint = findNearestSnapPoint(shipButton);
             if (nearestPoint != null) {
                 Coordinate coordinate = pointToCoordinate(nearestPoint);
                 if (!coordinate.equals(newCoordinate)||
@@ -281,5 +294,6 @@ public class ControllerPlacement implements ShipButton.MouseShipListener {
         newOrientation = shipButton.getOrientation();
         sea.paintByResult(coordinate, shipButton.getOrientation(), shipButton);
     }
+
 
 }

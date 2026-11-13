@@ -1,10 +1,12 @@
-package com;
+package com.swingStart;
 
+import com.*;
 import com.core.GameRules;
 import com.core.ListShip;
+
 import javax.swing.*;
 import java.awt.*;
-import static com.ColorStartGame.BACKGROUND;
+import static com.swingStart.ColorStartGame.BACKGROUND;
 
 //запомнить порядок настройки окна
 public class SwingStartGameFrame extends JFrame {
@@ -35,6 +37,7 @@ public final ListShip listShip;
         int x = getContentPane().getWidth() - SwingConfig.WIDTH_SEA + SwingConfig.WIDTH_DECK;
         remaining.setLocation(x, y);
         contentPane.add(remaining);
+
         ControllerPlacement placementController = new ControllerPlacement(sea, remaining,startBattleButton,generateSetShipButton,contentPane,gameRules);
         remaining.bindController(placementController);
         ControllerStartButton startGame = new ControllerStartButton(contentPane,listShip,gameRules,this);
@@ -42,6 +45,8 @@ public final ListShip listShip;
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
+        generateSetShipButton.doClick();
+        startGame.onStartBattleButton();
     }
 
 }
