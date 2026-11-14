@@ -4,7 +4,6 @@ import com.core.*;
 import com.displayModel.EnemySeaDisplayModel;
 import com.displayModel.MySeaDisplayModel;
 import com.displayModel.RemainingShipModel;
-import com.displayModel.ScoreModel;
 
 import java.io.IOException;
 import java.util.List;
@@ -77,11 +76,10 @@ public class LanternaGame {
     }
         MySeaDisplayModel mySea1 = new MySeaDisplayModel(shipDynamic);
         EnemySeaDisplayModel enemySea2 = new EnemySeaDisplayModel();
-        ScoreModel scoreModel1 = new ScoreModel();
         Bot bot = new Bot();
 
         while (true){//состояние "игра"
-            renderGameRun(render,mySea1,enemySea2,scoreModel1);
+            renderGameRun(render,mySea1,enemySea2,gameRules);
             boolean flag1 = true;
         while (flag1) {
             AttackCommand command1 = inputLanterna.inputAttack();
@@ -89,17 +87,13 @@ public class LanternaGame {
             enemySea2.applyAttackResult(result);
 
             if (result.outcome()!=AttackOutcome.INVALID_TARGET) {
-                if (result.outcome()==AttackOutcome.HIT||result.outcome()==AttackOutcome.DESTROYED){
-                    scoreModel1.addScore(result.scoreEarned());
-                }
                 if (result.outcome()==AttackOutcome.MISS){
                     flag1 = false;
                 }
                 if (result.outcome()==AttackOutcome.GAME_FINISHED){
-                    scoreModel1.addScore(result.scoreEarned());
                     break;
                 }
-                renderGameRun(render,mySea1,enemySea2,scoreModel1);
+                renderGameRun(render,mySea1,enemySea2,gameRules);
             }
         }
         List<AttackResult> results = bot.start(gameRules);
@@ -116,11 +110,11 @@ public class LanternaGame {
         render.refresh();
     }
 
-public static void renderGameRun(LanternaRender render, MySeaDisplayModel mySea1, EnemySeaDisplayModel enemySea2, ScoreModel scoreModel1) throws IOException {
+public static void renderGameRun(LanternaRender render, MySeaDisplayModel mySea1, EnemySeaDisplayModel enemySea2, GameRules gameRules) throws IOException {
     render.clear();
     render.renderingMyBorder();
     render.renderingEnemyBorder();
-    render.renderScore(scoreModel1);
+    render.renderScore(gameRules);
     render.renderingMySea(mySea1);
     render.renderingEnemySea(enemySea2);
     render.refresh();

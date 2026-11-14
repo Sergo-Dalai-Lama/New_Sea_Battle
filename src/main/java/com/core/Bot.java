@@ -17,6 +17,7 @@ public class Bot {
         gameRules = new GameRules(listShip);
         gameRules.generationShipFormation();
     }
+
     public static final Logger logger = LoggerFactory.getLogger(Bot.class);
 
     public GameRules getGameRules() {

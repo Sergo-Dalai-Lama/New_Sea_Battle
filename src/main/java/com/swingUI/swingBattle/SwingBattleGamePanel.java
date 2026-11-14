@@ -1,21 +1,23 @@
-package com;
+package com.swingUI.swingBattle;
 
+import com.swingUI.SwingConfig;
 import com.core.Bot;
 import com.core.GameRules;
 import com.core.ListShip;
 import com.displayModel.EnemySeaDisplayModel;
 import com.displayModel.MySeaDisplayModel;
-import com.displayModel.ScoreModel;
-
+import com.swingUI.swingStart.SwingStartGameFrame;
 import javax.swing.*;
 import java.awt.*;
 
 public class SwingBattleGamePanel extends JPanel {
     private final GameRules gameRules;
     private final ListShip listShip;
-    public SwingBattleGamePanel(ListShip listShip, GameRules gameRules) {
+    private final SwingStartGameFrame frame;
+    public SwingBattleGamePanel(SwingStartGameFrame frame,ListShip listShip, GameRules gameRules) {
         this.listShip = listShip;
         this.gameRules = gameRules;
+        this.frame = frame;
         Bot bot = new Bot();
         setLayout(null);
         setBounds(0, 0, SwingConfig.WIDTH, SwingConfig.HEIGHT);
@@ -25,14 +27,13 @@ public class SwingBattleGamePanel extends JPanel {
         SwingEnemySea enemySea = new SwingEnemySea(model);
         SwingMySea mySea = new SwingMySea(new MySeaDisplayModel(listShip));
         SurrenderButton surrenderButton = new SurrenderButton();
-        ScoreModel scoreModel = new ScoreModel();
-        SwingScore swingScore = new SwingScore(scoreModel);
+        SwingScore swingScore = new SwingScore();
         add(swingScore);
         add(surrenderButton);
         add(enemySea);
         add(mySea);
         enemySea.setLocation(0, y);
-        ControllerBattle controllerBattle = new ControllerBattle(this,enemySea,mySea,gameRules,bot,swingScore);
+        ControllerBattle controllerBattle = new ControllerBattle(frame,this,enemySea,mySea,gameRules,bot,swingScore);
         JLabel textEnemy = new JLabel("This is Enemy sea");
         JLabel textMy = new JLabel("This is My sea");
         textEnemy.setFont(new Font("Colibri", Font.BOLD, 15));

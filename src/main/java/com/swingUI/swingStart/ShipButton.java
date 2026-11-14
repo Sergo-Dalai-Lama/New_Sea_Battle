@@ -1,12 +1,12 @@
-package com.swingStart;
+package com.swingUI.swingStart;
 
-import com.SwingConfig;
+import com.swingUI.SwingConfig;
 import com.core.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import static com.swingStart.ColorStartGame.*;
+import static com.swingUI.swingStart.ColorStartGame.*;
 
 public class ShipButton extends JButton {
     public interface MouseShipListener {

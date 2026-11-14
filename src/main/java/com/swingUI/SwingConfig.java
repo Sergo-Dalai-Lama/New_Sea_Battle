@@ -1,4 +1,4 @@
-package com;
+package com.swingUI;
 
 import com.core.GameConfig;
 

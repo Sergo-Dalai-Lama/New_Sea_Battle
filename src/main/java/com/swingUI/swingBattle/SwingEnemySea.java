@@ -1,5 +1,6 @@
-package com;
+package com.swingUI.swingBattle;
 
+import com.swingUI.SwingConfig;
 import com.core.*;
 import com.displayModel.EnemySeaDisplayModel;
 import javax.swing.*;
@@ -8,7 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import static com.ColorBattleGame.*;
+import static com.swingUI.swingBattle.ColorBattleGame.*;
 
 public class SwingEnemySea extends JPanel {
     public interface EnemySeaMouseListener{

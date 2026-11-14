@@ -1,6 +1,6 @@
-package com.swingStart;
+package com.swingUI.swingStart;
 
-import com.SwingConfig;
+import com.swingUI.SwingConfig;
 import com.core.SetShipResult;
 import com.core.UnSetShipResult;
 import com.displayModel.RemainingShipModel;

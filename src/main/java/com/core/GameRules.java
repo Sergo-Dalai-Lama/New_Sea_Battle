@@ -7,6 +7,7 @@ public class GameRules {
     private final ListShip listShip;
     private final List<Coordinate> unBlockedCells;
     private final List<ShipForPlacementState> listShipForPlacementState = new ArrayList<>();
+    private int myKilledShipsScore = 0;
     public GameRules(ListShip listShip) {
         this.listShip = listShip;
         unBlockedCells = new ArrayList<>();
@@ -193,6 +194,7 @@ public class GameRules {
                     }
                 }
                 if (listShip.sizeLive()==0){//сначала проверить - все ли корабли убиты
+                    myKilledShipsScore++;
                     return new AttackResult(
                             coordinate,
                             true,
@@ -202,7 +204,7 @@ public class GameRules {
                             targets.size()+1
                     );
                 }
-
+                myKilledShipsScore++;
                 return new AttackResult(
                         coordinate,
                         true,
@@ -213,6 +215,7 @@ public class GameRules {
 
                 );
             }
+            myKilledShipsScore++;
             return new AttackResult(
                     coordinate,
                     true,
@@ -374,7 +377,9 @@ public class GameRules {
         }
     }
 }
-
+public int getScore() {
+        return myKilledShipsScore;
+}
 public List<ShipForPlacementState> getShipsForPlacement() {
         return listShipForPlacementState;
 }

@@ -1,12 +1,12 @@
 package com;
 
 
-import com.swingStart.SwingStartGameFrame;
+import com.swingUI.swingStart.SwingStartGameFrame;
 
 import javax.swing.*;
 
 public class Main{
-static void main() {
+public static void main(String[] args) {
     SwingUtilities.invokeLater(SwingStartGameFrame::new);
 }
 

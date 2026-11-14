@@ -1,5 +1,6 @@
-package com;
+package com.swingUI.swingBattle;
 
+import com.swingUI.SwingConfig;
 import com.core.AttackResult;
 import com.core.GameConfig;
 import com.displayModel.MySeaDisplayModel;
@@ -7,8 +8,8 @@ import com.displayModel.MySeaDisplayModel;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.ColorBattleGame.*;
-import static com.ColorBattleGame.BORDER_CELL;
+import static com.swingUI.swingBattle.ColorBattleGame.*;
+import static com.swingUI.swingBattle.ColorBattleGame.BORDER_CELL;
 
 public class SwingMySea extends JPanel {
     private MySeaDisplayModel model;

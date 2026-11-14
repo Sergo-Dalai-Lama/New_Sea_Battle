@@ -1,27 +1,35 @@
-package com;
+package com.swingUI.swingBattle;
 
 import com.core.*;
+import com.swingUI.SwingConfig;
+import com.swingUI.swingFinish.ShowDialogFinish;
+import com.swingUI.swingStart.SwingStartGameFrame;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class ControllerBattle implements SwingEnemySea.EnemySeaMouseListener{
+public class ControllerBattle implements SwingEnemySea.EnemySeaMouseListener {
     private final SwingBattleGamePanel gamePanel;
     private final SwingEnemySea enemySea;
     private final SwingMySea mySea;
     private final GameRules gameRules;
     private Coordinate newCoordinate = null;
     private final Bot bot;
-    private final SwingScore  swingScore;
+    private final SwingScore swingScore;
+    private final SwingStartGameFrame frame;
     private boolean isPlayerTurn = true;
-    public ControllerBattle(SwingBattleGamePanel gamePanel,SwingEnemySea enemySea, SwingMySea mySea,  GameRules gameRules,Bot bot,SwingScore swingScore) {
+    public ControllerBattle(SwingStartGameFrame frame,SwingBattleGamePanel gamePanel, SwingEnemySea enemySea, SwingMySea mySea, GameRules gameRules, Bot bot, SwingScore swingScore) {
         this.gamePanel = gamePanel;
         this.enemySea = enemySea;
         this.mySea = mySea;
         this.gameRules = gameRules;
         this.bot = bot;
         this.swingScore = swingScore;
+        this.frame = frame;
         enemySea.setEnemySeaMouseListener(this);
     }
 
@@ -35,14 +43,15 @@ public class ControllerBattle implements SwingEnemySea.EnemySeaMouseListener{
             enemySea.applyAttackResult(attackResult);
             if (attackResult.outcome()!=AttackOutcome.INVALID_TARGET) {
                 if (attackResult.outcome() == AttackOutcome.HIT || attackResult.outcome() == AttackOutcome.DESTROYED) {
-                    swingScore.scoreUpdate(attackResult);
+                    swingScore.scoreUpdate(bot.getGameRules().getScore());
                 }
                 if (attackResult.outcome() == AttackOutcome.MISS) {
                     isPlayerTurn = false;
                     enemySea.blockAttack();
                 }
                 if (attackResult.outcome() == AttackOutcome.GAME_FINISHED) {
-                    //выводить сообщение о победе
+                    String text = "You win!";
+                    ShowDialogFinish showDialogFinish = new ShowDialogFinish(bot.getGameRules().getScore(),frame,text);
                 }
             }
         }
@@ -54,10 +63,10 @@ public class ControllerBattle implements SwingEnemySea.EnemySeaMouseListener{
             enemySea.unBlockAttack();
             isPlayerTurn = true;
             if (bot.getState()==GameState.WIN){
-                //выводить сообщение о победе
+                String text = "You lost(";
+                ShowDialogFinish showDialogFinish = new ShowDialogFinish(bot.getGameRules().getScore(),frame,text);
             }
         }
-
     }
 
     @Override
@@ -79,11 +88,7 @@ public class ControllerBattle implements SwingEnemySea.EnemySeaMouseListener{
     }
 
     private Coordinate pointToCoordinate(Point point){
-        return new Coordinate(point.x/SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
+        return new Coordinate(point.x/ SwingConfig.WIDTH_DECK, point.y/SwingConfig.HEIGHT_DECK);
     }
-    private Point coordinateToPoint(Coordinate coordinate){
-        return new Point(coordinate.x()*SwingConfig.WIDTH_DECK, coordinate.y()*SwingConfig.HEIGHT_DECK);
-    }
-
 
 }

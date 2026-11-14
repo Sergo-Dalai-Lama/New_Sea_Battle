@@ -1,4 +1,4 @@
-package com;
+package com.swingUI.swingBattle;
 
 import java.awt.*;
 

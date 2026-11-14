@@ -1,4 +1,6 @@
-package com;
+package com.swingUI.swingBattle;
+
+import com.swingUI.SwingConfig;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

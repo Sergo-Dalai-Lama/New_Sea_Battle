@@ -1,4 +1,4 @@
-package com.swingStart;
+package com.swingUI.swingStart;
 
 public enum PreviewSet {
     SET,

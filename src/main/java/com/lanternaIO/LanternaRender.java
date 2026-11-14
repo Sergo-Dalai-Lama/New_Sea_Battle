@@ -181,10 +181,9 @@ public void renderingMyRemainingShip(RemainingShipModel remainingShipModel){
         }
     }
 
-    @Override
-    public void renderScore(ScoreModel scoreModel){
+    public void renderScore(GameRules  gameRules){
 
-        int score = scoreModel.getScore();
+        int score = gameRules.getScore();
         textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
         screen.newTextGraphics().putString(26,4,"SCORE");
         screen.newTextGraphics().putString(26,5,score+"");

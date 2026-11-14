@@ -1,6 +1,6 @@
-package com.swingStart;
+package com.swingUI.swingStart;
 
-import com.SwingConfig;
+import com.swingUI.SwingConfig;
 
 import javax.swing.*;
 public class GenerateSetShipButton extends JButton {
